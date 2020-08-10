@@ -19,6 +19,8 @@ while running:
 		if event.type == pygame.KEYDOWN:
 			if event.key == pygame.K_SPACE:
 				player.perform_jump()
+			if event.key == pygame.K_z:
+				player.toggle_sword()
 
 	screen.fill(BLACK)
 

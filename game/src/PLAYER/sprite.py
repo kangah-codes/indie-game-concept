@@ -30,6 +30,7 @@ class Player(pygame.sprite.Sprite):
 		self.jumpDisabled = False
 		self.canDoubleJump = True
 		self.jumpCount = 0
+		self.toggleSword = True
 
 
 	def update(self, dt):
@@ -51,10 +52,14 @@ class Player(pygame.sprite.Sprite):
 			self.dt = FPS*0.00025
 			self.flip = False			
 		else:
-			self.update_state(self.base_state)
-			self.current_state = self.base_state
-			self.dt = FPS*0.0001
-			self.breakJump = False
+			if not self.toggleSword:
+				self.update_state(self.base_state)
+				self.current_state = self.base_state
+				self.dt = FPS*0.0001
+				self.breakJump = False
+			else:
+				self.update_state('idle_sword')
+				self.current_state = 'idle_sword'
 
 
 		# handle jumping and falling
@@ -83,8 +88,6 @@ class Player(pygame.sprite.Sprite):
 			self.isJumping = False
 			self.jumpCount = 0
 
-		print(self.canDoubleJump, self.jumpCount)
-
 	def perform_jump(self):
 		if not self.isFalling and self.jumpCount < 2:
 			self.isJumping = True
@@ -103,7 +106,9 @@ class Player(pygame.sprite.Sprite):
 					self.velY = -500
 					self.canDoubleJump = False
 					self.jumpCount += 1
-			
+
+	def toggle_sword(self):
+		self.toggleSword = not self.toggleSword
 
 	def update_state(self, state):
 		if self.current_state != state:
