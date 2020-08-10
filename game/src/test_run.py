@@ -1,32 +1,12 @@
-from PLAYER.load_sprites import *
-from PLAYER.animation import *
-from PLAYER.settings import *
+from PLAYER.physics import *
+from CONFIG.game import *
 from PLAYER.sprite import *
 
-# screen = pygame.display.set_mode((0, 0), pygame.RESIZABLE)
-screen = pygame.display.set_mode((800, 600))
 
-running = True
+game = Game()
 
-# test objects
-player = Player()
+game.spriteGroup.add(Player(game.space))
 
-while running:
-	CLOCK.tick(FPS)
-	for event in pygame.event.get():
-		if event.type == pygame.QUIT:
-			running = False
-		if event.type == pygame.KEYDOWN:
-			if event.key == pygame.K_SPACE:
-				player.perform_jump()
-			if event.key == pygame.K_z:
-				player.toggle_sword()
-			# if event.key == pygame.K_h:
-			# 	player.use_sword()
+game.run()
 
-	screen.fill(BLACK)
-
-	player.update(DT)
-	player.draw(screen)
-
-	pygame.display.update()
+# p = Player(game.space)
