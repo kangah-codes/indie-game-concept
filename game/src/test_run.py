@@ -3,7 +3,8 @@ from PLAYER.animation import *
 from PLAYER.settings import *
 from PLAYER.sprite import *
 
-screen = pygame.display.set_mode((0, 0), pygame.RESIZABLE)
+# screen = pygame.display.set_mode((0, 0), pygame.RESIZABLE)
+screen = pygame.display.set_mode((800, 600))
 
 running = True
 
