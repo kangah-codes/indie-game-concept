@@ -5,27 +5,6 @@
 """
 from CONFIG.settings import *
 
-# lambda function to transform images
-def transformImages(images, array, scale):
-    """
-    Function to append a scaled pygame image into an array
-    :param images: Array of images
-    :param array: Array to push to
-    :return: None
-    """
-    [
-        array.append(
-            pygame.transform.scale(
-                pygame.image.load(image).convert_alpha(),
-                (
-                    int(image.get_rect().width * scale),
-                    int(image.get_rect().height * scale)
-                )
-            )
-        ) for image in images
-    ]
-
-
 class PlayerAnimation:
     """
     Class animation
@@ -41,7 +20,10 @@ class PlayerAnimation:
         The full path of the sprites have to be included in the string
         """
         self.images = []
-        transformImages(sprites, self.images, scale)
+        for i in sprites:
+            image = pygame.image.load(i).convert_alpha()
+            images = pygame.transform.scale(image, (int(image.get_rect().width * scale), int(image.get_rect().height * scale)))
+            self.images.append(images)
         self.animation_time = frame_duration
         self.current_time = 0
         self.animation_frames = len(self.images)
