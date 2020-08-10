@@ -21,6 +21,8 @@ while running:
 				player.perform_jump()
 			if event.key == pygame.K_z:
 				player.toggle_sword()
+			# if event.key == pygame.K_h:
+			# 	player.use_sword()
 
 	screen.fill(BLACK)
 

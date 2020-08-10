@@ -45,6 +45,9 @@ class PlayerAnimation:
             self.index = (self.index + 1) % len(self.images)
             self.image = self.images[self.index]
 
+    def speed2x(self):
+        self.animation_time *= 2
+
     def get_current_image(self):
         """
         Method to return the current image in the animation
@@ -65,6 +68,9 @@ class PlayerAnimation:
         """
 
         return self.images.index(self.get_current_image()) == len(self.images) - 1
+
+    def get_current_frame(self):
+        return self.images.index(self.get_current_image())
 
     def blink(self, display, N):
         """

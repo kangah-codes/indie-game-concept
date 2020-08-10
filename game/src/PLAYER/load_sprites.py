@@ -119,5 +119,12 @@ player_states = {
 		os.path.join(BASE_DIR, 'assets/PLAYER/DIE/die_5.png'),
 		os.path.join(BASE_DIR, 'assets/PLAYER/DIE/die_6.png'),
 		os.path.join(BASE_DIR, 'assets/PLAYER/DIE/die_7.png'),
+	],
+	'draw_sword': [
+		os.path.join(BASE_DIR, 'assets/PLAYER/SWORD/DRAW_SWORD/draw_sword_1.png'),
+		os.path.join(BASE_DIR, 'assets/PLAYER/SWORD/DRAW_SWORD/draw_sword_2.png'),
+		os.path.join(BASE_DIR, 'assets/PLAYER/SWORD/DRAW_SWORD/draw_sword_3.png'),
+		os.path.join(BASE_DIR, 'assets/PLAYER/SWORD/DRAW_SWORD/draw_sword_4.png'),
+		os.path.join(BASE_DIR, 'assets/PLAYER/SWORD/DRAW_SWORD/draw_sword_5.png'),
 	]
 }

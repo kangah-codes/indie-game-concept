@@ -30,7 +30,9 @@ class Player(pygame.sprite.Sprite):
 		self.jumpDisabled = False
 		self.canDoubleJump = True
 		self.jumpCount = 0
-		self.toggleSword = True
+		self.toggleSword = False
+		self.usingSword = False
+		self.level = 3
 
 
 	def update(self, dt):
@@ -41,25 +43,40 @@ class Player(pygame.sprite.Sprite):
 		# handle keypresses
 		keyPress = pygame.key.get_pressed()
 
+		# attack
+
 		if keyPress[pygame.K_a]:
 			self.update_state('run')
-			self.current_state = 'run'
 			self.dt = FPS*0.00025
 			self.flip = True
 		elif keyPress[pygame.K_d]:
 			self.update_state('run')
-			self.current_state = 'run'
 			self.dt = FPS*0.00025
-			self.flip = False			
+			self.flip = False	
+		elif keyPress[pygame.K_s]:
+			self.update_state('crouch')
+			self.dt = FPS*0.0001
+		elif keyPress[pygame.K_h]:
+			self.use_sword()
 		else:
+			self.dt = DT
 			if not self.toggleSword:
 				self.update_state(self.base_state)
-				self.current_state = self.base_state
 				self.dt = FPS*0.0001
 				self.breakJump = False
 			else:
+				if self.current_state == 'crouch':
+					self.update_state(self.current_state)
 				self.update_state('idle_sword')
-				self.current_state = 'idle_sword'
+
+			if self.usingSword:
+				print(self.animation.get_current_frame())
+				self.animation.animate(dt)
+				if not self.animation.is_last_image():
+					self.use_sword()
+				else:
+					print("LOL")
+					self.usingSword = False
 
 
 		# handle jumping and falling
@@ -69,17 +86,17 @@ class Player(pygame.sprite.Sprite):
 
 			if self.velY >= 0 and not self.isSliding:
 				self.update_state('fall')
-				self.current_state = 'fall'
 				self.canDoubleJump = False
 				self.isFalling = True
 			elif self.velY < 0 and not self.isSliding:
 				self.update_state('jump')
-				self.current_state = 'jump'
 				if self.jumpCount < 2:
 					self.canDoubleJump = True
 				else:
 					self.canDoubleJump = False
 				self.isJumping = True
+				if not self.canDoubleJump:
+					self.update_state('jump_flip')
 
         # prevent player from falling off
 		if self.pos.y + self.rect.height > 500:
@@ -88,13 +105,15 @@ class Player(pygame.sprite.Sprite):
 			self.isJumping = False
 			self.jumpCount = 0
 
+		print(self.current_state)
+
+
 	def perform_jump(self):
 		if not self.isFalling and self.jumpCount < 2:
 			self.isJumping = True
 			self.dt = FPS*0.00025
 			if not self.isJumping or not self.isFalling:
 				self.update_state('jump')
-				self.current_state = 'jump'
 			self.velY = -500
 			if self.jumpCount < 2:
 				self.jumpCount += 1
@@ -107,12 +126,26 @@ class Player(pygame.sprite.Sprite):
 					self.canDoubleJump = False
 					self.jumpCount += 1
 
+
 	def toggle_sword(self):
 		self.toggleSword = not self.toggleSword
+
 
 	def update_state(self, state):
 		if self.current_state != state:
 			self.animation = PlayerAnimation(player_states.get(state), 2.0)
+			self.current_state = state
+
+	def use_sword(self):
+		case = {
+			1: lambda: self.update_state('attack_1'),
+			2: lambda: self.update_state('attack_2'),
+			3: lambda: self.update_state('attack_3'),
+		}
+		if self.toggleSword:
+			self.usingSword = True
+			self.dt = FPS*0.1
+			case.get(self.level)()
 
 
 	def draw(self, display):
