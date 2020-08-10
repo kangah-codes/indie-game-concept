@@ -13,10 +13,10 @@ class Game:
 		self.screen = pygame.display.set_mode((800, 600))
 
 		# pymunkk stuff
-		self.space = pymunk.Space()
-		self.space.gravity = pymunk.Vec2d(0.0, -900.0)
+		self.gravity = 9.8
 
 		self.spriteGroup = pygame.sprite.Group()
+		self.playerGroup = []
 
 	def run(self):
 		while self.running:
@@ -25,26 +25,29 @@ class Game:
 					running = False
 					pygame.quit()
 					exit()
+				if event.type == pygame.KEYDOWN:
+					if event.key == pygame.K_SPACE:
+						self.playerGroup[0].simulateJump()
+					if event.key == pygame.K_z:
+						self.playerGroup[0].drawSword()
+					# if event.key == pygame.K_a:
+					# 	self.playerGroup[0].flip = True
+					# if event.key == pygame.K_d:
+					# 	self.playerGroup[0].flip = False
 
-			self.dt = self.clock.tick(30)/1000.0
+			self.dt = self.clock.tick(FPS)/1000.0
 			self.runLogic()
 			self.draw()
 
 	def runLogic(self):
-		self.space.step(1/60)
 		self.spriteGroup.update(self.dt, self.screen)
+		# self.playerGroup[0].update(self.dt, self.screen)
 
 	def draw(self):
 		self.screen.fill(BLACK)
 
 		self.spriteGroup.draw(self.screen)
-
-		for sprite in self.spriteGroup:
-			shape = sprite.shape
-			ps = [pos.rotated(shape.body.angle) + shape.body.position for pos in shape.get_vertices()]
-			ps = [pymunk.pygame_util.to_pygame(pos, self.screen) for pos in ps]
-			ps += [ps[0]]
-			#self.screen.blit(sprite.image, pymunk.pygame_util.to_pygame(sprite.shape.body.position, self.screen))
-			pygame.draw.lines(self.screen, (RED), False, ps, 1)
+		self.playerGroup[0].update(self.screen)
+		self.playerGroup[0].draw(self.screen)
 
 		pygame.display.update()

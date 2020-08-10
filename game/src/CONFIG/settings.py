@@ -6,8 +6,8 @@
 
 import pygame
 import os
-import pymunk
-import pymunk.pygame_util
+# import pymunk
+# import pymunk.pygame_util
 import math
 
 #
@@ -30,10 +30,3 @@ CLOCK = pygame.time.Clock()
 
 # player deltatime update
 DT = FPS * 0.0001
-
-def flipY(p):
-	if (-p[1] + 600) == 0:
-		posY = 600
-	else:
-		posY = (-p[1] + 600)+600
-	return pymunk.Vec2d(p[0], posY)

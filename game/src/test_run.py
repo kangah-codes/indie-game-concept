@@ -1,11 +1,12 @@
-from PLAYER.physics import *
 from CONFIG.game import *
 from PLAYER.sprite import *
 
 
 game = Game()
 
-game.spriteGroup.add(Player(game.space))
+p = Player()
+
+game.playerGroup.append(p)
 
 game.run()
 
