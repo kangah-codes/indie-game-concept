@@ -25,6 +25,7 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 		self.dt = FPS/5000.0
 		self.flip = False
 		self.friction = -0.12
+		self.life = 5
 
 		# handling double jump
 		self.jumpCount = 0
@@ -115,7 +116,6 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 				self.update_state(self.base_state)
 		else:
 			self.update_state('die')
-		
 
 		# returning dt to normal when not flipping
 		if not self.isDoubleJumping or not self.isAttacking:
