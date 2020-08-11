@@ -62,6 +62,16 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 		self.life = 3
 		self.fullLife = 5
 
+		# inventory
+		self.arrows = 5
+		self.usingBow = False
+		self.isStretchingBow = False
+		self.isReleasingBow = False
+
+	def releaseBow(self):
+		self.isStretchingBow = False
+		self.isReleasingBow = True
+
 	def decreaseHealth(self):
 		# minus health
 		for i in range(len(self.health)-1, -1, -1):
@@ -108,7 +118,11 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 			self.onGround = False
 
 		self.simulateGravity()
-		self.state.animate(self.dt)
+		# stretching bow
+		if self.isStretchingBow:
+			self.state.animate(self.dt, True)
+		else:
+			self.state.animate(self.dt)
 		self.image = self.state.get_current_image()
 		# compute rect and mask for each frame
 		self.rect = self.image.get_rect()
@@ -127,6 +141,8 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 			if self.isFalling \
 				and not self.isAttacking \
 				and not self.isDrawingSword \
+				and not self.usingBow \
+				and not self.isReleasingBow \
 				and not self.isPuttingBackSword:
 				self.isDoubleJumping = False
 				self.update_state('fall')
@@ -134,38 +150,52 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 				and not self.isDoubleJumping \
 				and not self.isAttacking \
 				and not self.isDrawingSword \
+				and not self.isReleasingBow \
+				and not self.usingBow \
 				and not self.isPuttingBackSword:
 				self.update_state('jump')
 			elif self.isMoving \
 				and self.onGround \
 				and not self.isAttacking \
 				and not self.isDrawingSword \
+				and not self.usingBow \
+				and not self.isReleasingBow \
 				and not self.isPuttingBackSword:
 				# making sure we are on the ground before using the run animation
 				self.update_state('run')
 			elif self.isCrouching\
 				and not self.isAttacking \
 				and not self.isDrawingSword \
+				and not self.usingBow \
+				and not self.isReleasingBow \
 				and not self.isPuttingBackSword:
 				self.update_state('crouch')
 			elif self.isSliding \
 				and not self.isAttacking \
 				and not self.isDrawingSword \
+				and not self.usingBow \
+				and not self.isReleasingBow \
 				and not self.isPuttingBackSword:
 				self.update_state('slide')
 			elif self.toggleSword \
 				and not self.isAttacking \
 				and not self.isDrawingSword \
+				and not self.usingBow \
+				and not self.isReleasingBow \
 				and not self.isPuttingBackSword:
 				self.update_state('idle_sword')
 			elif self.isDoubleJumping \
 				and not self.isAttacking \
 				and not self.isDrawingSword \
+				and not self.usingBow \
+				and not self.isReleasingBow \
 				and not self.isPuttingBackSword:
 				self.state.animate(FPS/2500.0)
 				self.update_state('jump_flip')
 			elif self.isAttacking\
 				and not self.isDrawingSword \
+				and not self.usingBow \
+				and not self.isReleasingBow \
 				and not self.isPuttingBackSword:
 				self.state.animate(FPS/2000.0)
 				if self.attackType == 1:
@@ -179,14 +209,35 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 				and not self.isMoving \
 				and not self.toggleSword \
 				and not self.isAttacking \
+				and not self.usingBow \
+				and not self.isStretchingBow \
+				and not self.isReleasingBow \
 				and not self.isPuttingBackSword:
 				self.update_state(self.base_state)
-			elif self.isDrawingSword:
+			elif self.isDrawingSword \
+				and not self.isReleasingBow \
+				and not self.usingBow:
 				self.state.animate(FPS/2500.0)
 				self.update_state('draw_sword')
-			elif self.isPuttingBackSword:
+			elif self.isPuttingBackSword \
+				and not self.isReleasingBow \
+				and not self.usingBow:
 				self.state.animate(FPS/250000.0)
 				self.update_state('put_back')
+			elif self.usingBow:
+				if not self.isStretchingBow \
+					and not self.isReleasingBow:
+					if self.onGround:
+						self.update_state('shoot_stand')
+				elif self.isStretchingBow \
+					and not self.isReleasingBow:
+					self.update_state('hold_bow')
+				elif not self.isStretchingBow \
+					and self.isReleasingBow:
+					self.state.animate(FPS/25000.0)
+					# release whether player is still stretching or not
+					self.update_state('release_bow')
+				
 		else:
 			self.update_state('die')
 
@@ -229,6 +280,21 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 			if self.state.is_last_image():
 				self.isAttacking = False
 
+		# using bow
+		if self.usingBow:
+			if not self.isReleasingBow:
+				if self.state.is_last_image():
+					self.usingBow = True
+					self.isStretchingBow = True
+				else:
+					self.isStretchingBow = False
+			else:
+				self.isStretchingBow = False
+			
+		if self.isReleasingBow:
+			if self.state.is_last_image():
+				self.isReleasingBow = False
+
 		# generate
 		if self.spinStrength < 5:
 			self.spinStrength += 0.005
@@ -248,7 +314,7 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 			if self.state.is_last_image():
 				self.isPuttingBackSword = False
 
-		#print(self.dt)
+		print(self.usingBow)
 
 	
 	def attack(self, level):
@@ -265,6 +331,8 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 	def player_die(self):
 		self.isDead = True
 
+	def useBow(self):
+		self.usingBow = True
 
 	def perform_jump(self, speed=-600):
 		if self.canDoubleJump:
@@ -286,14 +354,24 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 			self.acc.x = -0.5
 			self.isMoving = True
 			self.movingDirection = 0
+			self.isStretchingBow = False
+			self.usingBow = False
 		elif keyPress[pygame.K_d]:
 			self.acc.x = 0.5
 			self.isMoving = True
 			self.movingDirection = 1
+			self.isStretchingBow = False
+			self.usingBow = False
 		elif keyPress[pygame.K_s]:
 			self.isMoving = False
 			self.isCrouching = True
+			self.isStretchingBow = False
+			self.usingBow = False
+		elif keyPress[pygame.K_u]:
+			self.useBow()
 		else:
+			self.isStretchingBow = False
+			self.usingBow = False
 			self.isMoving = False
 			self.isCrouching = False
 		

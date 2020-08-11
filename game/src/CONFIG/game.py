@@ -42,6 +42,9 @@ class Game:
                         self.playerGroup[0].decreaseHealth()
                     if event.key == pygame.K_y:
                         self.playerGroup[0].increaseHealth()
+                if event.type == pygame.KEYUP:
+                    if event.key == pygame.K_u:
+                        self.playerGroup[0].releaseBow()
                     
             # key combination for special attack
             # quite hacky but works

@@ -32,18 +32,19 @@ class PlayerAnimation:
         self.alpha = 255
         self.blink_speed = 1 # constant fade speed
 
-    def animate(self, dt):
+    def animate(self, dt, hold=False):
         """
         Method to update sprites to make an animation
         :param dt: deltatime to update animaton from
         :return: None
         """
-        self.current_time += dt
+        if not hold:
+            self.current_time += dt
 
-        if self.current_time >= self.animation_time:
-            self.current_time = 0
-            self.index = (self.index + 1) % len(self.images)
-            self.image = self.images[self.index]
+            if self.current_time >= self.animation_time:
+                self.current_time = 0
+                self.index = (self.index + 1) % len(self.images)
+                self.image = self.images[self.index]
 
     def get_current_image(self):
         """

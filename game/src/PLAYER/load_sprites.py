@@ -131,5 +131,21 @@ player_states = {
 		os.path.join(BASE_DIR, 'assets/PLAYER/SWORD/PUT_BACK/put_back_1.png'),
 		os.path.join(BASE_DIR, 'assets/PLAYER/SWORD/PUT_BACK/put_back_2.png'),
 		os.path.join(BASE_DIR, 'assets/PLAYER/SWORD/PUT_BACK/put_back_3.png'),
+	],
+	'shoot_stand': [
+		os.path.join(BASE_DIR, 'assets/PLAYER/BOW/SHOOT_STAND/1.png'),
+		os.path.join(BASE_DIR, 'assets/PLAYER/BOW/SHOOT_STAND/2.png'),
+		os.path.join(BASE_DIR, 'assets/PLAYER/BOW/SHOOT_STAND/3.png'),
+		os.path.join(BASE_DIR, 'assets/PLAYER/BOW/SHOOT_STAND/4.png'),
+		os.path.join(BASE_DIR, 'assets/PLAYER/BOW/SHOOT_STAND/5.png'),
+		os.path.join(BASE_DIR, 'assets/PLAYER/BOW/SHOOT_STAND/6.png'),
+		os.path.join(BASE_DIR, 'assets/PLAYER/BOW/SHOOT_STAND/7.png'),
+	],
+	'release_bow': [
+		os.path.join(BASE_DIR, 'assets/PLAYER/BOW/RELEASE/8.png'),
+		os.path.join(BASE_DIR, 'assets/PLAYER/BOW/RELEASE/9.png'),
+	],
+	'hold_bow': [
+		os.path.join(BASE_DIR, 'assets/PLAYER/BOW/SHOOT_STAND/7.png'),
 	]
 }
