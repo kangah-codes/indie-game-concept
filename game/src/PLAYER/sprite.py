@@ -1,119 +1,131 @@
 """
-	Main player class module
-	author: Joshua Akangah
-	date: 10/8/20
+Main player class module
+author: Joshua Akangah
+date: 10/8/20
 """
 
 from .load_sprites import *
-from .animation import *
 from .settings import *
+from .animation import *
+from .physics import *
 
-class Player(pygame.sprite.Sprite):
+class Player(pygame.sprite.Sprite, PhysicsObject):
 	def __init__(self):
+		pygame.sprite.Sprite.__init__(self)
+		PhysicsObject.__init__(self, 100, 100)
 		# load player animation and scale to twice the size
-		self.animation = PlayerAnimation(player_states.get('idle_no_sword'), 2.0)
-		self.base_state = 'idle_no_sword' # default player state
-		self.current_state = 'idle_no_sword'
-		self.pos = pygame.math.Vector2()
-		self.image = self.animation.get_current_image()
+		self.base_state = 'idle_no_sword'
+		self.state = PlayerAnimation(player_states.get('idle_no_sword'), 2.0)
+		self.current_state = self.base_state
+		self.image = self.state.get_current_image()
 		self.rect = self.image.get_rect()
 		self.mask = pygame.mask.from_surface(self.image)
-		self.pos.x, self.pos.y = 100, 100
+		self.dt = FPS/5000.0
 		self.flip = False
-		self.dt = DT
-		self.isJumping = False
-		self.isFalling = True
-		self.isSliding = False
-		self.accX, self.accY = 0.0, 800
-		self.velX, self.velY = 0.0, 0.0
-		self.isDead = False
-		self.jumpDisabled = False
-		self.canDoubleJump = True
+
+		# handling double jump
 		self.jumpCount = 0
-		self.toggleSword = True
+		self.canDoubleJump = True
 
+		# if player is on ground
+		self.onGround = False
 
+		# player is moving
+		self.isMoving = False
+		self.movingDirection = 1 # horizontal player moving direction 1 for right 0 for left
+
+		# player crouching
+		self.isCrouching = False
+
+		# player sliding
+		self.isSliding = False
+		
 	def update(self, dt):
-		self.animation.animate(self.dt)
-		self.image = self.animation.get_current_image()
-		self.rect = self.image.get_rect()
-
-		# handle keypresses
-		keyPress = pygame.key.get_pressed()
-
-		if keyPress[pygame.K_a]:
-			self.update_state('run')
-			self.current_state = 'run'
-			self.dt = FPS*0.00025
-			self.flip = True
-		elif keyPress[pygame.K_d]:
-			self.update_state('run')
-			self.current_state = 'run'
-			self.dt = FPS*0.00025
-			self.flip = False			
-		else:
-			if not self.toggleSword:
-				self.update_state(self.base_state)
-				self.current_state = self.base_state
-				self.dt = FPS*0.0001
-				self.breakJump = False
-			else:
-				self.update_state('idle_sword')
-				self.current_state = 'idle_sword'
-
-
-		# handle jumping and falling
-		if (self.isFalling or self.isJumping) and (self.pos.y + self.rect.height < 500):
-			self.pos.y += self.velY * (30/1000.0)
-			self.velY += self.accY * (30/1000.0)
-
-			if self.velY >= 0 and not self.isSliding:
-				self.update_state('fall')
-				self.current_state = 'fall'
-				self.canDoubleJump = False
-				self.isFalling = True
-			elif self.velY < 0 and not self.isSliding:
-				self.update_state('jump')
-				self.current_state = 'jump'
-				if self.jumpCount < 2:
-					self.canDoubleJump = True
-				else:
-					self.canDoubleJump = False
-				self.isJumping = True
-
-        # prevent player from falling off
-		if self.pos.y + self.rect.height > 500:
-			self.pos.y = 500 - self.rect.height - 1
+		if (self.pos.y + self.rect.height >= 600):
+			self.pos.y = 600 - self.rect.height
 			self.isFalling = False
-			self.isJumping = False
+			self.canDoubleJump = True
+			self.onGround = True
 			self.jumpCount = 0
 
-	def perform_jump(self):
-		if not self.isFalling and self.jumpCount < 2:
+		# changing on ground state when player is jumping or falling
+		if self.isJumping or self.isFalling:
+			self.onGround = False
+
+		self.simulateGravity()
+		self.state.animate(self.dt)
+		self.image = self.state.get_current_image()
+		# compute rect and mask for each frame
+		self.rect = self.image.get_rect()
+		self.mask = pygame.mask.from_surface(self.image)
+		self.rect.x, self.rect.y = self.pos.x, self.pos.y
+
+		# checking if player can double jump
+		# i don't know why the first jump count is not added so I made this 1 instead of 2 and it works :)
+		if self.jumpCount < 1:
+			self.canDoubleJump = True
+		else:
+			self.canDoubleJump = False
+
+		# updating player states
+		if self.isFalling:
+			self.update_state('fall')
+		elif self.isJumping:
+			self.update_state('jump')
+		elif self.isMoving:
+			self.update_state('run')
+		elif self.isCrouching:
+			self.update_state('crouch')
+		elif self.isSliding:
+			self.update_state('slide')
+		elif self.onGround and not self.isMoving:
+			self.update_state(self.base_state)
+
+		# flipping player based on current move direction
+		self.flip = True if self.movingDirection == 0 else False
+
+		self.handleKeypress()
+
+		# stopping sliding animation when last frame is reached
+		if self.current_state == 'slide':
+			if self.state.is_last_image():
+				self.isSliding = False
+
+		# handle player horizontal movement
+		if self.isMoving:
+			pass
+
+	def perform_jump(self, speed=-600):
+		if self.canDoubleJump:
+			self.jumpCount += 1
+			self.vel.y = speed
 			self.isJumping = True
-			self.dt = FPS*0.00025
-			if not self.isJumping or not self.isFalling:
-				self.update_state('jump')
-				self.current_state = 'jump'
-			self.velY = -500
-			if self.jumpCount < 2:
-				self.jumpCount += 1
 
-			if not self.canDoubleJump:
-				return
-			else:
-				if self.jumpCount < 2:
-					self.velY = -500
-					self.canDoubleJump = False
-					self.jumpCount += 1
-
+	def handleKeypress(self):
+		keyPress = pygame.key.get_pressed()
+		self.acc.x = 0
+		if keyPress[pygame.K_a]:
+			self.acc.x = -100
+			self.isMoving = True
+			self.movingDirection = 0
+		elif keyPress[pygame.K_d]:
+			self.acc.x = 100
+			self.isMoving = True
+			self.movingDirection = 1
+		elif keyPress[pygame.K_s]:
+			self.isMoving = False
+			self.isCrouching = True
+		else:
+			self.isMoving = False
+			self.isCrouching = False
+		
 	def toggle_sword(self):
-		self.toggleSword = not self.toggleSword
+		pass
 
 	def update_state(self, state):
 		if self.current_state != state:
-			self.animation = PlayerAnimation(player_states.get(state), 2.0)
-
+			self.current_state = state
+			self.state = PlayerAnimation(player_states.get(self.current_state), 2.0)
 
 	def draw(self, display):
 		if self.flip:
