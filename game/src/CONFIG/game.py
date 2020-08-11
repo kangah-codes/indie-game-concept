@@ -41,7 +41,9 @@ class Game:
             # quite hacky but works
             keyPress = pygame.key.get_pressed()
             if keyPress[pygame.K_g] and keyPress[pygame.K_h]:
-                self.playerGroup[0].attack(3)
+                if self.playerGroup[0].spinStrength > 0.5:
+                    self.playerGroup[0].attack(3)
+                    self.playerGroup[0].spinStrength -= 0.7
                         
                     
                     

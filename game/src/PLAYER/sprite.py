@@ -47,7 +47,8 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 
 		# attacking
 		self.isAttacking = False
-		self.attackType = 3
+		self.attackType = 1
+		self.spinStrength = 5
 		
 	def update(self, dt):
 		if (self.pos.y + self.rect.height >= 600):
@@ -144,6 +145,12 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 		if self.isAttacking:
 			if self.state.is_last_image():
 				self.isAttacking = False
+
+		# generate
+		if self.spinStrength < 5:
+			self.spinStrength += 0.005
+
+		print(self.spinStrength)
 
 	
 	def attack(self, level):
