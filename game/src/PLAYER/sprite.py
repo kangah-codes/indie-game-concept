@@ -40,6 +40,9 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 
 		# player sliding
 		self.isSliding = False
+
+		# holding sword
+		self.toggleSword = False
 		
 	def update(self, dt):
 		if (self.pos.y + self.rect.height >= 600):
@@ -79,7 +82,10 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 			self.update_state('crouch')
 		elif self.isSliding:
 			self.update_state('slide')
-		elif self.onGround and not self.isMoving:
+		elif self.toggleSword:
+			self.update_state('idle_sword')
+		# checking since player can be on ground even when sliding
+		elif self.onGround and not self.isMoving and not self.toggleSword:
 			self.update_state(self.base_state)
 
 		# flipping player based on current move direction
@@ -91,7 +97,13 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 		if self.current_state == 'slide':
 			if self.state.is_last_image():
 				self.isSliding = False
-
+			else:
+				print(self.flip)
+				if self.flip:
+					self.acc.x = -0.5
+				else:
+					self.acc.x = 0.5
+		
 		# apply friction
 		self.acc.x += self.vel.x * self.friction
 
@@ -110,6 +122,9 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 			self.jumpCount += 1
 			self.vel.y = speed
 			self.isJumping = True
+
+	def slide(self):
+		self.isSliding = True
 
 	def handleKeypress(self):
 		keyPress = pygame.key.get_pressed()
@@ -130,7 +145,7 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 			self.isCrouching = False
 		
 	def toggle_sword(self):
-		pass
+		self.toggleSword = not self.toggleSword
 
 	def update_state(self, state):
 		if self.current_state != state:

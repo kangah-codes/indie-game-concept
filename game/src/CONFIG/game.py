@@ -29,7 +29,9 @@ class Game:
                     if event.key == pygame.K_SPACE:
                         self.playerGroup[0].perform_jump()
                     if event.key == pygame.K_z:
-                        self.playerGroup[0].isSliding = True
+                        self.playerGroup[0].slide()
+                    if event.key == pygame.K_x:
+                        self.playerGroup[0].toggle_sword()
 
             self.dt = self.clock.tick(FPS)/1000.0
             self.runLogic()
