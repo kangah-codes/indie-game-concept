@@ -314,8 +314,6 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 			if self.state.is_last_image():
 				self.isPuttingBackSword = False
 
-		print(self.usingBow)
-
 	
 	def attack(self, level):
 		if self.toggleSword:

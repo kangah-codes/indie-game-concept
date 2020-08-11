@@ -17,6 +17,7 @@ class Game:
 
         self.spriteGroup = pygame.sprite.Group()
         self.playerGroup = []
+        self.background = None
 
     def run(self):
         while self.running:
@@ -64,12 +65,16 @@ class Game:
 
     def draw(self):
         self.screen.fill(BLACK)
+        if self.background != None:
+            self.background.update(1)
+            self.background.background.draw(self.screen)
 
         # self.spriteGroup.draw(self.screen)
         # do not do this if youre not testing
         for sprite in self.spriteGroup.sprites():
             if sprite.base_type == 'heart':
                 sprite.draw(self.screen)
+
         self.playerGroup[0].update(self.screen)
         self.playerGroup[0].draw(self.screen)
 
