@@ -32,6 +32,10 @@ class Game:
                         self.playerGroup[0].slide()
                     if event.key == pygame.K_x:
                         self.playerGroup[0].toggle_sword()
+                    if event.key == pygame.K_g:
+                        self.playerGroup[0].attack(1)
+                    print(event.key)
+                    
 
             self.dt = self.clock.tick(FPS)/1000.0
             self.runLogic()

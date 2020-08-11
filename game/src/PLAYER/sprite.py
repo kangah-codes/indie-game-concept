@@ -44,6 +44,10 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 
 		# holding sword
 		self.toggleSword = False
+
+		# attacking
+		self.isAttacking = False
+		self.attackType = 3
 		
 	def update(self, dt):
 		if (self.pos.y + self.rect.height >= 600):
@@ -74,29 +78,37 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 			self.canDoubleJump = False
 
 		# updating player states
-		if self.isFalling:
+		if self.isFalling and not self.isAttacking:
 			self.isDoubleJumping = False
 			self.update_state('fall')
-		elif self.isJumping and not self.isDoubleJumping:
+		elif self.isJumping and not self.isDoubleJumping and not self.isAttacking:
 			self.update_state('jump')
-		elif self.isMoving and self.onGround:
+		elif self.isMoving and self.onGround and not self.isAttacking:
 			# making sure we are on the ground before using the run animation
 			self.update_state('run')
-		elif self.isCrouching:
+		elif self.isCrouching and not self.isAttacking:
 			self.update_state('crouch')
-		elif self.isSliding:
+		elif self.isSliding and not self.isAttacking:
 			self.update_state('slide')
-		elif self.toggleSword:
+		elif self.toggleSword and not self.isAttacking:
 			self.update_state('idle_sword')
-		elif self.isDoubleJumping:
-			self.dt = FPS/2500.0
+		elif self.isDoubleJumping and not self.isAttacking:
+			self.state.animate(FPS/2500.0)
 			self.update_state('jump_flip')
+		elif self.isAttacking:
+			self.state.animate(FPS/2000.0)
+			if self.attackType == 1:
+				self.update_state('attack_1')
+			elif self.attackType == 2:
+				self.update_state('attack_2')
+			else:
+				self.update_state('attack_3')
 		# checking since player can be on ground even when sliding
-		elif self.onGround and not self.isMoving and not self.toggleSword:
+		elif self.onGround and not self.isMoving and not self.toggleSword and not self.isAttacking:
 			self.update_state(self.base_state)
 
 		# returning dt to normal when not flipping
-		if not self.isDoubleJumping:
+		if not self.isDoubleJumping or not self.isAttacking:
 			self.dt = FPS/5000.0
 
 		# flipping player based on current move direction
@@ -122,12 +134,28 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 		self.vel.x += self.acc.x
 		self.pos.x += self.vel.x + 0.5 * self.acc.x
 
-
+		# making sure we dont go over bounds
 		if self.pos.x + self.rect.width > 800:
 			self.pos.x = 800 - self.rect.width
 		if self.pos.x < 0:
 			self.pos.x = 0
-			
+
+		# attacking
+		if self.isAttacking:
+			if self.state.is_last_image():
+				self.isAttacking = False
+
+	
+	def attack(self, level):
+		self.isAttacking = True
+		self.attackType = level
+		if self.attackType == 1:
+			self.update_state('attack_1')
+		elif self.attackType == 2:
+			self.update_state('attack_2')
+		else:
+			self.update_state('attack_3')
+
 
 	def perform_jump(self, speed=-600):
 		if self.canDoubleJump:
