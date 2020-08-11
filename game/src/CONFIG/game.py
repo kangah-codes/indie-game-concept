@@ -34,7 +34,16 @@ class Game:
                         self.playerGroup[0].toggle_sword()
                     if event.key == pygame.K_g:
                         self.playerGroup[0].attack(1)
-                    print(event.key)
+                    if event.key == pygame.K_h:
+                        self.playerGroup[0].attack(2)
+                    
+            # key combination for special attack
+            # quite hacky but works
+            keyPress = pygame.key.get_pressed()
+            if keyPress[pygame.K_g] and keyPress[pygame.K_h]:
+                self.playerGroup[0].attack(3)
+                        
+                    
                     
 
             self.dt = self.clock.tick(FPS)/1000.0
