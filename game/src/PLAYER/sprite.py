@@ -25,7 +25,9 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 		self.dt = FPS/5000.0
 		self.flip = False
 		self.friction = -0.12
-		self.life = 5
+		# using array to store player heart states
+		# 1 is full, 0.5 is half, 0 is empty
+		self.health = [1, 1, 1, 1, 1]
 
 		# handling double jump
 		self.jumpCount = 0
@@ -57,6 +59,41 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 		self.isDead = False
 		self.life = 3
 		self.fullLife = 5
+
+	def decreaseHealth(self):
+		# minus health
+		for i in range(len(self.health)-1, -1, -1):
+			print(i)
+			if self.health[i] == 0:
+				continue
+			elif self.health[i] == 0.5:
+				# bring from half to empty
+				self.health[i] = 0
+				break
+			else:
+				# bring from full to half
+				self.health[i] = 0.5
+				break
+		
+		# checking if player life is empty
+		if all(element == self.health[0] for element in self.health):
+			self.player_die()
+
+	def increaseHealth(self):
+		# minus health
+		for i in range(len(self.health)):
+			print(i)
+			if self.health[i] == 0:
+				self.health[i] = 0.5
+				break
+			elif self.health[i] == 0.5:
+				# bring from half to empty
+				self.health[i] = 1
+				break
+			else:
+				# bring from full to half
+				continue
+		print(self.health)
 		
 	def update(self, dt):
 		if (self.pos.y + self.rect.height >= 600):
@@ -133,7 +170,6 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 			if self.state.is_last_image():
 				self.isSliding = False
 			else:
-				print(self.flip)
 				if self.flip:
 					self.acc.x = -0.5
 				else:

@@ -38,6 +38,10 @@ class Game:
                         self.playerGroup[0].attack(2)
                     if event.key == pygame.K_k:
                         self.playerGroup[0].player_die()
+                    if event.key == pygame.K_t:
+                        self.playerGroup[0].decreaseHealth()
+                    if event.key == pygame.K_y:
+                        self.playerGroup[0].increaseHealth()
                     
             # key combination for special attack
             # quite hacky but works
@@ -58,11 +62,10 @@ class Game:
     def draw(self):
         self.screen.fill(BLACK)
 
-        print(self.spriteGroup.sprites())
         # self.spriteGroup.draw(self.screen)
         # do not do this if youre not testing
         for sprite in self.spriteGroup.sprites():
-            if sprite.type == 'heart':
+            if sprite.base_type == 'heart':
                 sprite.draw(self.screen)
         self.playerGroup[0].update(self.screen)
         self.playerGroup[0].draw(self.screen)

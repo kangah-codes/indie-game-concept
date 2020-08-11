@@ -7,34 +7,47 @@ date: 11/8/20
 from ..entity import *
 from .settings import *
 
-class Heart(pygame.sprite.Sprite, Entity):
-	def __init__(self, binded_to):
+class HeartSprite(pygame.sprite.Sprite):
+	def __init__(self):
 		pygame.sprite.Sprite.__init__(self)
+		self.base_type = 'heart'
+		self.image = images[0]
+	
+	def setFull(self):
+		self.image = images[0]
+	
+	def setHalf(self):
+		self.image = images[1]
+
+	def setEmpty(self):
+		self.image = images[2]
+
+
+class Heart(HeartSprite, Entity):
+	def __init__(self, bindedTo):
+		HeartSprite.__init__(self)
 		Entity.__init__(self)
-		# selecting a parent entity's life to display
-		self.parentEntity = binded_to
-		# selecting loaded heart sprites
-		self.images = images
-		# setting default image to first
-		self.image = self.images[0]
-		self.halfImage = self.images[1]
-		self.emptyImage = self.images[2]
-		self.pos = pygame.math.Vector2(100, 100)
-		self.fullLife = self.parentEntity.fullLife
-		self.parentLife = self.parentEntity.life
-		self.type = 'heart'
-		self.drawnLife = []
+		self.rect = self.image.get_rect()
+		self.player = bindedTo
+		self.bars = self.player.health
+		self.drawSprites = []
 
 	def update(self, dt, display):
-		self.rect = self.image.get_rect()
-		self.rect.x, self.rect.y = self.pos.x, self.pos.y
+		pass
+
 
 	def draw(self, display):
-		for i in range(self.fullLife):
-			for j in range(self.parentLife):
-				display.blit(self.image, (i*self.rect.width+10, self.pos.y))
-				self.drawnLife.append(self.image)
-			for k in range(self.fullLife-self.parentLife):
-				display.blit(self.emptyImage, (j*self.rect.width+10, self.pos.y))
-		print(self.drawnLife)
+		self.drawSprites.clear()
+		for heart in self.player.health:
+			if heart == 1:
+				#print(f"Health at {self.player.health.index(heart)} from full to half")
+				self.setFull()
+			elif heart == 0.5:
+				#print(f"Health at {self.player.health.index(heart)} from half to zero")
+				self.setHalf()
+			else:
+				self.setEmpty()
+			self.drawSprites.append(self.image)
 
+		for i in range(len(self.drawSprites)):
+			display.blit(self.drawSprites[i], (i*self.rect.width, 100))
