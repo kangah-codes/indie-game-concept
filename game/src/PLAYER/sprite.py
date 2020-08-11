@@ -48,6 +48,8 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 		self.isSliding = False
 
 		# holding sword
+		self.isDrawingSword = False
+		self.isPuttingBackSword = False
 		self.toggleSword = False
 
 		# attacking
@@ -63,7 +65,6 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 	def decreaseHealth(self):
 		# minus health
 		for i in range(len(self.health)-1, -1, -1):
-			print(i)
 			if self.health[i] == 0:
 				continue
 			elif self.health[i] == 0.5:
@@ -76,13 +77,12 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 				break
 		
 		# checking if player life is empty
-		if all(element == self.health[0] for element in self.health):
+		if all(heart == self.health[0] for heart in self.health):
 			self.player_die()
 
 	def increaseHealth(self):
-		# minus health
+		# increase
 		for i in range(len(self.health)):
-			print(i)
 			if self.health[i] == 0:
 				self.health[i] = 0.5
 				break
@@ -93,7 +93,6 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 			else:
 				# bring from full to half
 				continue
-		print(self.health)
 		
 	def update(self, dt):
 		if (self.pos.y + self.rect.height >= 600):
@@ -125,24 +124,49 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 
 		# updating player states
 		if not self.isDead:
-			if self.isFalling and not self.isAttacking:
+			if self.isFalling \
+				and not self.isAttacking \
+				and not self.isDrawingSword \
+				and not self.isPuttingBackSword:
 				self.isDoubleJumping = False
 				self.update_state('fall')
-			elif self.isJumping and not self.isDoubleJumping and not self.isAttacking:
+			elif self.isJumping \
+				and not self.isDoubleJumping \
+				and not self.isAttacking \
+				and not self.isDrawingSword \
+				and not self.isPuttingBackSword:
 				self.update_state('jump')
-			elif self.isMoving and self.onGround and not self.isAttacking:
+			elif self.isMoving \
+				and self.onGround \
+				and not self.isAttacking \
+				and not self.isDrawingSword \
+				and not self.isPuttingBackSword:
 				# making sure we are on the ground before using the run animation
 				self.update_state('run')
-			elif self.isCrouching and not self.isAttacking:
+			elif self.isCrouching\
+				and not self.isAttacking \
+				and not self.isDrawingSword \
+				and not self.isPuttingBackSword:
 				self.update_state('crouch')
-			elif self.isSliding and not self.isAttacking:
+			elif self.isSliding \
+				and not self.isAttacking \
+				and not self.isDrawingSword \
+				and not self.isPuttingBackSword:
 				self.update_state('slide')
-			elif self.toggleSword and not self.isAttacking:
+			elif self.toggleSword \
+				and not self.isAttacking \
+				and not self.isDrawingSword \
+				and not self.isPuttingBackSword:
 				self.update_state('idle_sword')
-			elif self.isDoubleJumping and not self.isAttacking:
+			elif self.isDoubleJumping \
+				and not self.isAttacking \
+				and not self.isDrawingSword \
+				and not self.isPuttingBackSword:
 				self.state.animate(FPS/2500.0)
 				self.update_state('jump_flip')
-			elif self.isAttacking:
+			elif self.isAttacking\
+				and not self.isDrawingSword \
+				and not self.isPuttingBackSword:
 				self.state.animate(FPS/2000.0)
 				if self.attackType == 1:
 					self.update_state('attack_1')
@@ -151,13 +175,25 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 				else:
 					self.update_state('attack_3')
 			# checking since player can be on ground even when sliding
-			elif self.onGround and not self.isMoving and not self.toggleSword and not self.isAttacking:
+			elif self.onGround \
+				and not self.isMoving \
+				and not self.toggleSword \
+				and not self.isAttacking \
+				and not self.isPuttingBackSword:
 				self.update_state(self.base_state)
+			elif self.isDrawingSword:
+				self.state.animate(FPS/2500.0)
+				self.update_state('draw_sword')
+			elif self.isPuttingBackSword:
+				self.state.animate(FPS/250000.0)
+				self.update_state('put_back')
 		else:
 			self.update_state('die')
 
 		# returning dt to normal when not flipping
-		if not self.isDoubleJumping or not self.isAttacking:
+		if not self.isDoubleJumping \
+			or not self.isAttacking \
+			or not self.isPuttingBackSword:
 			self.dt = FPS/5000.0
 
 		# flipping player based on current move direction
@@ -203,16 +239,28 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 				time.sleep(1)
 				exit()
 
+		# draw sword animations
+		if self.isDrawingSword:
+			if self.state.is_last_image():
+				self.isDrawingSword = False
+		
+		if self.isPuttingBackSword:
+			if self.state.is_last_image():
+				self.isPuttingBackSword = False
+
+		#print(self.dt)
+
 	
 	def attack(self, level):
-		self.isAttacking = True
-		self.attackType = level
-		if self.attackType == 1:
-			self.update_state('attack_1')
-		elif self.attackType == 2:
-			self.update_state('attack_2')
-		else:
-			self.update_state('attack_3')
+		if self.toggleSword:
+			self.isAttacking = True
+			self.attackType = level
+			if self.attackType == 1:
+				self.update_state('attack_1')
+			elif self.attackType == 2:
+				self.update_state('attack_2')
+			else:
+				self.update_state('attack_3')
 
 	def player_die(self):
 		self.isDead = True
@@ -251,6 +299,15 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 		
 	def toggle_sword(self):
 		self.toggleSword = not self.toggleSword
+
+		if self.toggleSword:
+			self.update_state('draw_sword')
+			self.isDrawingSword = True
+			self.isPuttingBackSword = False
+		else:
+			self.update_state('put_back')
+			self.isPuttingBackSword = True
+			self.isDrawingSword = False
 
 	def update_state(self, state):
 		if self.current_state != state:
