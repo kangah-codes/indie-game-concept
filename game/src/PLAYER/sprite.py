@@ -54,6 +54,8 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 
 		# die
 		self.isDead = False
+		self.life = 3
+		self.fullLife = 5
 		
 	def update(self, dt):
 		if (self.pos.y + self.rect.height >= 600):
