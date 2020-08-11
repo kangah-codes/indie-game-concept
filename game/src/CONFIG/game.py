@@ -46,9 +46,6 @@ class Game:
                 if self.playerGroup[0].spinStrength > 0.5:
                     self.playerGroup[0].attack(3)
                     self.playerGroup[0].spinStrength -= 0.7
-                        
-                    
-                    
 
             self.dt = self.clock.tick(FPS)/1000.0
             self.runLogic()
@@ -56,12 +53,17 @@ class Game:
 
     def runLogic(self):
         self.spriteGroup.update(self.dt, self.screen)
-        # self.playerGroup[0].update(self.dt, self.screen)
+
 
     def draw(self):
         self.screen.fill(BLACK)
 
-        self.spriteGroup.draw(self.screen)
+        print(self.spriteGroup.sprites())
+        # self.spriteGroup.draw(self.screen)
+        # do not do this if youre not testing
+        for sprite in self.spriteGroup.sprites():
+            if sprite.type == 'heart':
+                sprite.draw(self.screen)
         self.playerGroup[0].update(self.screen)
         self.playerGroup[0].draw(self.screen)
 
