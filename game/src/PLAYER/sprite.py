@@ -9,6 +9,8 @@ from .settings import *
 from .animation import *
 from .physics import *
 
+import time
+
 class Player(pygame.sprite.Sprite, PhysicsObject):
 	def __init__(self):
 		pygame.sprite.Sprite.__init__(self)
@@ -49,6 +51,9 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 		self.isAttacking = False
 		self.attackType = 1
 		self.spinStrength = 5
+
+		# die
+		self.isDead = False
 		
 	def update(self, dt):
 		if (self.pos.y + self.rect.height >= 600):
@@ -79,34 +84,38 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 			self.canDoubleJump = False
 
 		# updating player states
-		if self.isFalling and not self.isAttacking:
-			self.isDoubleJumping = False
-			self.update_state('fall')
-		elif self.isJumping and not self.isDoubleJumping and not self.isAttacking:
-			self.update_state('jump')
-		elif self.isMoving and self.onGround and not self.isAttacking:
-			# making sure we are on the ground before using the run animation
-			self.update_state('run')
-		elif self.isCrouching and not self.isAttacking:
-			self.update_state('crouch')
-		elif self.isSliding and not self.isAttacking:
-			self.update_state('slide')
-		elif self.toggleSword and not self.isAttacking:
-			self.update_state('idle_sword')
-		elif self.isDoubleJumping and not self.isAttacking:
-			self.state.animate(FPS/2500.0)
-			self.update_state('jump_flip')
-		elif self.isAttacking:
-			self.state.animate(FPS/2000.0)
-			if self.attackType == 1:
-				self.update_state('attack_1')
-			elif self.attackType == 2:
-				self.update_state('attack_2')
-			else:
-				self.update_state('attack_3')
-		# checking since player can be on ground even when sliding
-		elif self.onGround and not self.isMoving and not self.toggleSword and not self.isAttacking:
-			self.update_state(self.base_state)
+		if not self.isDead:
+			if self.isFalling and not self.isAttacking:
+				self.isDoubleJumping = False
+				self.update_state('fall')
+			elif self.isJumping and not self.isDoubleJumping and not self.isAttacking:
+				self.update_state('jump')
+			elif self.isMoving and self.onGround and not self.isAttacking:
+				# making sure we are on the ground before using the run animation
+				self.update_state('run')
+			elif self.isCrouching and not self.isAttacking:
+				self.update_state('crouch')
+			elif self.isSliding and not self.isAttacking:
+				self.update_state('slide')
+			elif self.toggleSword and not self.isAttacking:
+				self.update_state('idle_sword')
+			elif self.isDoubleJumping and not self.isAttacking:
+				self.state.animate(FPS/2500.0)
+				self.update_state('jump_flip')
+			elif self.isAttacking:
+				self.state.animate(FPS/2000.0)
+				if self.attackType == 1:
+					self.update_state('attack_1')
+				elif self.attackType == 2:
+					self.update_state('attack_2')
+				else:
+					self.update_state('attack_3')
+			# checking since player can be on ground even when sliding
+			elif self.onGround and not self.isMoving and not self.toggleSword and not self.isAttacking:
+				self.update_state(self.base_state)
+		else:
+			self.update_state('die')
+		
 
 		# returning dt to normal when not flipping
 		if not self.isDoubleJumping or not self.isAttacking:
@@ -150,7 +159,11 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 		if self.spinStrength < 5:
 			self.spinStrength += 0.005
 
-		print(self.spinStrength)
+		# dead
+		if self.isDead:
+			if self.state.is_last_image():
+				time.sleep(1)
+				exit()
 
 	
 	def attack(self, level):
@@ -162,6 +175,9 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 			self.update_state('attack_2')
 		else:
 			self.update_state('attack_3')
+
+	def player_die(self):
+		self.isDead = True
 
 
 	def perform_jump(self, speed=-600):

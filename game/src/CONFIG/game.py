@@ -36,6 +36,8 @@ class Game:
                         self.playerGroup[0].attack(1)
                     if event.key == pygame.K_h:
                         self.playerGroup[0].attack(2)
+                    if event.key == pygame.K_k:
+                        self.playerGroup[0].player_die()
                     
             # key combination for special attack
             # quite hacky but works
