@@ -27,6 +27,7 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 		# handling double jump
 		self.jumpCount = 0
 		self.canDoubleJump = True
+		self.isDoubleJumping = False
 
 		# if player is on ground
 		self.onGround = False
@@ -51,9 +52,10 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 			self.canDoubleJump = True
 			self.onGround = True
 			self.jumpCount = 0
+			self.isDoubleJumping = False
 
 		# changing on ground state when player is jumping or falling
-		if self.isJumping or self.isFalling:
+		if self.isJumping or self.isFalling or self.isDoubleJumping:
 			self.onGround = False
 
 		self.simulateGravity()
@@ -73,10 +75,12 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 
 		# updating player states
 		if self.isFalling:
+			self.isDoubleJumping = False
 			self.update_state('fall')
-		elif self.isJumping:
+		elif self.isJumping and not self.isDoubleJumping:
 			self.update_state('jump')
-		elif self.isMoving:
+		elif self.isMoving and self.onGround:
+			# making sure we are on the ground before using the run animation
 			self.update_state('run')
 		elif self.isCrouching:
 			self.update_state('crouch')
@@ -84,9 +88,16 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 			self.update_state('slide')
 		elif self.toggleSword:
 			self.update_state('idle_sword')
+		elif self.isDoubleJumping:
+			self.dt = FPS/2500.0
+			self.update_state('jump_flip')
 		# checking since player can be on ground even when sliding
 		elif self.onGround and not self.isMoving and not self.toggleSword:
 			self.update_state(self.base_state)
+
+		# returning dt to normal when not flipping
+		if not self.isDoubleJumping:
+			self.dt = FPS/5000.0
 
 		# flipping player based on current move direction
 		self.flip = True if self.movingDirection == 0 else False
@@ -116,12 +127,17 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 			self.pos.x = 800 - self.rect.width
 		if self.pos.x < 0:
 			self.pos.x = 0
+			
 
 	def perform_jump(self, speed=-600):
 		if self.canDoubleJump:
 			self.jumpCount += 1
 			self.vel.y = speed
 			self.isJumping = True
+
+			if self.jumpCount >= 1:
+				self.update_state('jump_flip')
+				self.isDoubleJumping = True
 
 	def slide(self):
 		self.isSliding = True
