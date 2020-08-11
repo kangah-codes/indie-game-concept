@@ -22,6 +22,7 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 		self.mask = pygame.mask.from_surface(self.image)
 		self.dt = FPS/5000.0
 		self.flip = False
+		self.friction = -0.12
 
 		# handling double jump
 		self.jumpCount = 0
@@ -91,9 +92,18 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 			if self.state.is_last_image():
 				self.isSliding = False
 
-		# handle player horizontal movement
-		if self.isMoving:
-			pass
+		# apply friction
+		self.acc.x += self.vel.x * self.friction
+
+		# equations of motion
+		self.vel.x += self.acc.x
+		self.pos.x += self.vel.x + 0.5 * self.acc.x
+
+
+		if self.pos.x + self.rect.width > 800:
+			self.pos.x = 800 - self.rect.width
+		if self.pos.x < 0:
+			self.pos.x = 0
 
 	def perform_jump(self, speed=-600):
 		if self.canDoubleJump:
@@ -103,13 +113,13 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 
 	def handleKeypress(self):
 		keyPress = pygame.key.get_pressed()
-		self.acc.x = 0
+		self.acc = pygame.math.Vector2(0, 800)
 		if keyPress[pygame.K_a]:
-			self.acc.x = -100
+			self.acc.x = -0.5
 			self.isMoving = True
 			self.movingDirection = 0
 		elif keyPress[pygame.K_d]:
-			self.acc.x = 100
+			self.acc.x = 0.5
 			self.isMoving = True
 			self.movingDirection = 1
 		elif keyPress[pygame.K_s]:
