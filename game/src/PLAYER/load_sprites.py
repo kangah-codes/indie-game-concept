@@ -102,9 +102,9 @@ player_states = {
 		os.path.join(BASE_DIR, 'assets/PLAYER/FALL/fall_2.png'),
 	],
 	'hurt': [
-		os.path.join(BASE_DIR, 'assets/PLAYER/HURT/hurt_1.png'),
-		os.path.join(BASE_DIR, 'assets/PLAYER/HURT/hurt_2.png'),
-		os.path.join(BASE_DIR, 'assets/PLAYER/HURT/hurt_3.png'),
+		os.path.join(BASE_DIR, 'assets/PLAYER/HURT/0.png'),
+		os.path.join(BASE_DIR, 'assets/PLAYER/HURT/1.png'),
+		os.path.join(BASE_DIR, 'assets/PLAYER/HURT/2.png'),
 	],
 	'crouch': [
 		os.path.join(BASE_DIR, 'assets/PLAYER/CROUCH/crouch1.png'),

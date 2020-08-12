@@ -15,25 +15,16 @@ class Game:
         self.screen = pygame.display.set_mode((window_width, window_height))
         self.spriteGroup = pygame.sprite.Group()
         self.player = None
-        self.tiles = None
         self.background = None
         self.font = pygame.font.SysFont('Arial', 16)
 
         self.time_epoch = time.time()
         self.dt = time.time() - self.time_epoch
-        self.map = {}
-
-        self.trueScroll = [0, 0]
-        self.scroll = self.trueScroll.copy()
-
-        self.map = mapFile
-        self.tile_rects = []
 
     def renderFont(self, fps):
         return self.font.render(str(round(fps)), 0, GREEN)
 
     def run(self):
-    
         while self.running:
             self.dt = time.time() - self.time_epoch
 
@@ -107,40 +98,10 @@ class Game:
             self.clock.tick(FPS)
 
     def update(self):
-        self.trueScroll[0] = (self.player.rect.x - 450)
-        self.trueScroll[1] = (self.player.rect.y - 300)
-
-        self.scroll = self.trueScroll.copy()
-        self.scroll[0] = int(self.scroll[0])
-        self.scroll[1] = int(self.scroll[1])
-
-        self.tile_rects = []
-        
-        # tile rendering
-
-        
         self.spriteGroup.update(self.dt, self.screen)
 
     def draw(self):
         self.screen.fill(BLACK)
-
-        # if self.tiles != None:
-        #     self.tiles.draw(self.map.get(self.target_chunk), self.screen)
-        self.tile_rects = []
-        y = 0
-        for layer in self.map:
-            x = 0
-            for tile in layer:
-                if tile == '1':
-                    self.screen.blit(self.tiles.topImage,(x*16,y*16))
-                if tile == '2':
-                    self.screen.blit(self.tiles.middleImage,(x*16,y*16))
-                if tile != '0':
-                    self.tile_rects.append(pygame.Rect(x*16,y*16,16,16))
-                x += 1
-            y += 1
-        
-        self.player.collidePlatform(self.tile_rects)
 
         for sprite in self.spriteGroup.sprites():
             if sprite.base_type == 'heart':
@@ -150,7 +111,5 @@ class Game:
         self.player.draw(self.screen)
 
         self.screen.blit(self.renderFont(self.clock.get_fps()), (300,0))
-
-        pygame.draw.circle(self.screen, WHITE, (self.player.rect.x, self.player.rect.y), 10)
 
         pygame.display.update()

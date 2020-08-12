@@ -9,7 +9,6 @@ from .settings import *
 from .animation import *
 from .physics import *
 
-import time
 
 class Player(pygame.sprite.Sprite, PhysicsObject):
 	def __init__(self):
@@ -113,13 +112,13 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 
 		self.dt = dt
 
-		# if (self.pos.y + self.rect.height >= window_height):
-		# 	self.pos.y = window_height - self.rect.height
-		# 	self.isFalling = False
-		# 	self.canDoubleJump = True
-		# 	self.onGround = True
-		# 	self.jumpCount = 0
-		# 	self.isDoubleJumping = False
+		if (self.pos.y + self.rect.height >= window_height):
+			self.pos.y = window_height - self.rect.height
+			self.isFalling = False
+			self.canDoubleJump = True
+			self.onGround = True
+			self.jumpCount = 0
+			self.isDoubleJumping = False
 
 		# changing on ground state when player is jumping or falling
 		if self.isJumping or self.isFalling or self.isDoubleJumping:
@@ -138,6 +137,8 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 		# self.rect = self.image.get_rect()
 		self.mask = pygame.mask.from_surface(self.image)
 		self.rect.x, self.rect.y = self.pos
+
+		print(self.rect.width)
 
 		# checking if player can double jump
 		# i don't know why the first jump count is not added so I made this 1 instead of 2 and it works :)
@@ -307,7 +308,6 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 		# dead
 		if self.isDead:
 			if self.state.is_last_image():
-				time.sleep(1)
 				exit()
 
 		# draw sword animations
@@ -335,7 +335,9 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 		self.isDead = True
 
 	def useBow(self):
-		self.usingBow = True
+		if not self.toggleSword:
+			# making sure player is not using sword first
+			self.usingBow = True
 
 	def perform_jump(self, speed=-600):
 		if self.canDoubleJump:
