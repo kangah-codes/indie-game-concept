@@ -137,8 +137,8 @@ class Game:
             self.clock.tick(FPS)
 
     def update(self):
-        self.trueScroll[0] += (self.playerGroup[0].rect.x - self.trueScroll[0]-window_width//2)/20
-        self.trueScroll[1] += (self.playerGroup[0].rect.y - self.trueScroll[1]-window_height//2)/20
+        self.trueScroll[0] += (self.playerGroup[0].rect.x - self.trueScroll[0]-window_width//2)
+        self.trueScroll[1] += (self.playerGroup[0].rect.y - self.trueScroll[1]-window_height//2)
         self.scroll = self.trueScroll.copy()
         self.scroll[0] = int(self.scroll[0])
         self.scroll[1] = int(self.scroll[1])
@@ -149,7 +149,7 @@ class Game:
                 self.target_x = x - 1 + int(round(self.scroll[0]/(CHUNK_SIZE*16)))
                 self.target_y = y - 1 + int(round(self.scroll[1]/(CHUNK_SIZE*16)))
                 self.target_chunk = str(self.target_x) + ';' + str(self.target_y)
-                
+
                 if self.target_chunk not in self.map:
                     self.map[self.target_chunk] = self.generate_chunk(self.target_x, self.target_y)
 

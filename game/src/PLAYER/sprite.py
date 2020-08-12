@@ -407,8 +407,9 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 				markers[3] = True
 
 			collision_types['data'].append([block, markers])
-			
+
 			self.pos.y = self.rect.y
+			self.pos.x = self.rect.x
 			self.isFalling = False
 			self.canDoubleJump = True
 			self.onGround = True

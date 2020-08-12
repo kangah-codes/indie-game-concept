@@ -31,4 +31,4 @@ info = pygame.display.Info() # You have to call this before pygame.display.set_m
 screen_width, screen_height = info.current_w, info.current_h
 window_width, window_height = 900, 600
 
-CHUNK_SIZE = 8
+CHUNK_SIZE = 16
