@@ -7,6 +7,9 @@ date: 10/9/20
 import pygame
 import os
 import time
+import random
+
+os.environ['SDL_VIDEO_CENTERED'] = '1'
 pygame.init()
 
 # base project directory
@@ -20,7 +23,12 @@ GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 
 # GLOBAL VARS
-FPS = 120
+FPS = 60
 CLOCK = pygame.time.Clock()
 
-# player deltatime update
+# screen sizes
+info = pygame.display.Info() # You have to call this before pygame.display.set_mode()
+screen_width, screen_height = info.current_w, info.current_h
+window_width, window_height = 900, 600
+
+CHUNK_SIZE = 8

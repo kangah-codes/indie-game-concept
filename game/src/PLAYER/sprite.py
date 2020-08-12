@@ -111,13 +111,13 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 
 		self.dt = dt
 
-		if (self.pos.y + self.rect.height >= 600):
-			self.pos.y = 600 - self.rect.height
-			self.isFalling = False
-			self.canDoubleJump = True
-			self.onGround = True
-			self.jumpCount = 0
-			self.isDoubleJumping = False
+		# if (self.pos.y + self.rect.height >= window_height):
+		# 	self.pos.y = window_height - self.rect.height
+		# 	self.isFalling = False
+		# 	self.canDoubleJump = True
+		# 	self.onGround = True
+		# 	self.jumpCount = 0
+		# 	self.isDoubleJumping = False
 
 		# changing on ground state when player is jumping or falling
 		if self.isJumping or self.isFalling or self.isDoubleJumping:
@@ -260,7 +260,7 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 		if self.current_state == 'slide':
 			if self.state.is_last_image():
 				self.isSliding = False
-			self.move(self.dt)
+			self.move(self.speed)
 		
 		# apply friction
 		# self.acc.x += self.vel.x * self.friction * (self.dt/FPS*2)
@@ -271,8 +271,8 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 
 
 		# making sure we dont go over bounds
-		if self.pos.x + self.rect.width > 800:
-			self.pos.x = 800 - self.rect.width
+		if self.pos.x + self.rect.width > screen_width:
+			self.pos.x = screen_width - self.rect.width
 		if self.pos.x < 0:
 			self.pos.x = 0
 
@@ -375,3 +375,44 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 		if self.flip:
 			self.image = pygame.transform.flip(self.image, True, False)
 		display.blit(self.image, (self.rect.x, self.rect.y))
+
+	def collidePlatform(self, platforms, ramps=[]):
+		block_hit_list = collision_test(self.rect, platforms)
+		collision_types = {'top':False,'bottom':False,'right':False,'left':False,'slant_bottom':False,'data':[]}
+
+		# added collision data to "collision_types". ignore the poorly chosen variable name
+		for block in block_hit_list:
+			markers = [False,False,False,False]
+			if not self.flip:
+				self.rect.right = block.left
+				collision_types['right'] = True
+				markers[0] = True
+			elif self.flip:
+				self.rect.left = block.right
+				collision_types['left'] = True
+				markers[1] = True
+			collision_types['data'].append([block, markers])
+			self.pos.x = self.rect.x
+			
+		block_hit_list = collision_test(self.rect, platforms)
+		for block in block_hit_list:
+			markers = [False,False,False,False]
+			if self.acc.y > 0:
+				self.rect.bottom = block.top
+				collision_types['bottom'] = True
+				markers[2] = True
+			elif self.acc.y < 0:
+				self.rect.top = block.bottom
+				collision_types['top'] = True
+				markers[3] = True
+
+			collision_types['data'].append([block, markers])
+			
+			self.pos.y = self.rect.y
+			self.isFalling = False
+			self.canDoubleJump = True
+			self.onGround = True
+			self.jumpCount = 0
+			self.isDoubleJumping = False
+
+		return collision_types
