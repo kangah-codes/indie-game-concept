@@ -68,6 +68,8 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 		self.isStretchingBow = False
 		self.isReleasingBow = False
 
+		self.collisions = None
+
 	def releaseBow(self):
 		self.isStretchingBow = False
 		self.isReleasingBow = True
@@ -104,14 +106,7 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 				# bring from full to half
 				continue
 		
-	def update(self, dt):
-		if (self.pos.y + self.rect.height >= 600):
-			self.pos.y = 600 - self.rect.height
-			self.isFalling = False
-			self.canDoubleJump = True
-			self.onGround = True
-			self.jumpCount = 0
-			self.isDoubleJumping = False
+	def update(self, dt, tiles):
 
 		# changing on ground state when player is jumping or falling
 		if self.isJumping or self.isFalling or self.isDoubleJumping:
@@ -127,7 +122,19 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 		# compute rect and mask for each frame
 		self.rect = self.image.get_rect()
 		self.mask = pygame.mask.from_surface(self.image)
+		self.posA, self.collisions = self.move(tiles)
 		self.rect.x, self.rect.y = self.pos.x, self.pos.y
+
+
+		# self.isFalling = False
+		# self.canDoubleJump = True
+		# self.onGround = True
+		# self.jumpCount = 0
+		# self.isDoubleJumping = False
+		self.move(tiles)
+
+		# if self.collisions.get('bottom') == True:
+		# 	self.acc.y = 0
 
 		# checking if player can double jump
 		# i don't know why the first jump count is not added so I made this 1 instead of 2 and it works :)
@@ -372,6 +379,45 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 			self.usingBow = False
 			self.isMoving = False
 			self.isCrouching = False
+
+	def playerCollideTile(self, tiles):
+		return [tile for tile in tiles if self.rect.colliderect(tile)]
+
+	def move(self, tiles):
+		collision_types = {'top':False,'bottom':False,'right':False,'left':False}
+		hit_list = self.playerCollideTile(tiles)
+		for tile in hit_list:
+			if self.acc.x > 0:
+				# moving right
+				self.rect.right = tile.left
+				collision_types['right'] = True
+				self.pos.x = self.rect.x
+			elif self.acc.x < 0:
+				self.rect.left = tile.right
+				collision_types['left'] = True
+				self.pos.x = self.rect.x
+
+		for tile in hit_list:
+			if self.acc.y >= 0:
+				self.rect.bottom = tile.top
+				collision_types['bottom'] = True
+				self.isFalling = False
+				self.canDoubleJump = True
+				self.onGround = True
+				self.jumpCount = 0
+				self.isDoubleJumping = False
+				self.pos.y = self.rect.y
+			elif self.acc.y < 0:
+				self.rect.top = tile
+				collision_types['top'] = True
+				self.isFalling = True
+				self.canDoubleJump = False
+				self.onGround = False
+				self.jumpCount = 0
+				self.isDoubleJumping = False
+				self.pos.y = self.rect.y
+		print(collision_types)		
+		return self.rect, collision_types
 		
 	def toggle_sword(self):
 		self.toggleSword = not self.toggleSword
@@ -393,4 +439,4 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 	def draw(self, display):
 		if self.flip:
 			self.image = pygame.transform.flip(self.image, True, False)
-		display.blit(self.image, (self.pos.x, self.pos.y))
+		display.blit(self.image, (self.rect.x, self.rect.y))

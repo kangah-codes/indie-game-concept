@@ -50,4 +50,4 @@ class Heart(HeartSprite, Entity):
 			self.drawSprites.append(self.image)
 
 		for i in range(len(self.drawSprites)):
-			display.blit(self.drawSprites[i], (i*self.rect.width, 100))
+			display.blit(self.drawSprites[i], (i*self.rect.width, 0))

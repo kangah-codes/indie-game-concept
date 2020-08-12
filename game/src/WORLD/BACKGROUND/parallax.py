@@ -60,7 +60,6 @@ class ParallaxSurface(object):
             scroll_factor is the slowdown factor for this parallax level. '''
         try:
             if scale:
-                print(width, height)
                 image = (
                     pygame.transform.scale(
                         pygame.image.load(image_path),

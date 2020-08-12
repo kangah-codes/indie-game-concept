@@ -6,6 +6,7 @@
 
 import pygame
 import os
+pygame.init()
 
 # base project directory
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
