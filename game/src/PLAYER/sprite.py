@@ -15,8 +15,8 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 		pygame.sprite.Sprite.__init__(self)
 		PhysicsObject.__init__(self, 100, 100)
 		# load player animation and scale to twice the size
-		self.base_state = 'idle_no_sword'
-		self.state = PlayerAnimation(player_states.get('idle_no_sword'), 2.0)
+		self.base_state = 'slide'
+		self.state = PlayerAnimation(player_states.get(self.base_state), 2.0)
 		self.current_state = self.base_state
 		self.image = self.state.get_current_image()
 		self.rect = self.image.get_rect()
@@ -108,9 +108,17 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 				continue
 		
 	def update(self, dt):
-		# get current tick
+		self.image = self.state.get_current_image()
 
+		# compute rect and mask for each frame
+		self.rect = self.image.get_rect()
+		self.mask = pygame.mask.from_surface(self.image)
+		self.rect.x, self.rect.y = self.pos
+
+		# get current tick
 		self.dt = dt
+
+		print(self.rect.height+self.pos.y)
 
 		if (self.pos.y + self.rect.height >= window_height):
 			self.pos.y = window_height - self.rect.height
@@ -119,6 +127,7 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 			self.onGround = True
 			self.jumpCount = 0
 			self.isDoubleJumping = False
+
 
 		# changing on ground state when player is jumping or falling
 		if self.isJumping or self.isFalling or self.isDoubleJumping:
@@ -132,13 +141,7 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 		else:
 			self.state.animate(self.dt)
 
-		self.image = self.state.get_current_image()
-		# compute rect and mask for each frame
-		# self.rect = self.image.get_rect()
-		self.mask = pygame.mask.from_surface(self.image)
-		self.rect.x, self.rect.y = self.pos
-
-		print(self.rect.width)
+		# print(self.rect.height)
 
 		# checking if player can double jump
 		# i don't know why the first jump count is not added so I made this 1 instead of 2 and it works :)
