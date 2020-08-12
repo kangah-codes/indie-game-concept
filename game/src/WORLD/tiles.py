@@ -27,7 +27,7 @@ class Tile():
             if tile[1] == 1:
                 # top
                 display.blit(self.topImage, (tile[0][0]*16, tile[0][1]*16))
-            elif tile[1] == 2:
+            elif tile == 2:
                 display.blit(self.middleImage, (tile[0][0]*16, tile[0][1]*16))
             if tile != 0:
                 self.rects.append(pygame.Rect(tile[0][0]*16, tile[0][1]*16, 16, 16))

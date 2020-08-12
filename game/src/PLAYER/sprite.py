@@ -70,6 +70,8 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 		self.collisions = None
 		self.collisionTypes = {'top':False,'bottom':False,'right':False,'left':False}
 
+		self.drawSurf = pygame.Surface((self.rect.width, self.rect.height))
+
 	def releaseBow(self):
 		self.isStretchingBow = False
 		self.isReleasingBow = True
@@ -133,7 +135,7 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 
 		self.image = self.state.get_current_image()
 		# compute rect and mask for each frame
-		self.rect = self.image.get_rect()
+		# self.rect = self.image.get_rect()
 		self.mask = pygame.mask.from_surface(self.image)
 		self.rect.x, self.rect.y = self.pos
 
@@ -372,9 +374,18 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 			self.state = PlayerAnimation(player_states.get(self.current_state), 2.0)
 
 	def draw(self, display):
+		self.drawSurf.fill(BLACK)
+		
+		for i in self.mask.outline():
+			pygame.draw.circle(self.drawSurf, WHITE, i, 1)
+
 		if self.flip:
 			self.image = pygame.transform.flip(self.image, True, False)
-		display.blit(self.image, (self.rect.x, self.rect.y))
+			self.drawSurf = pygame.transform.flip(self.drawSurf, True, False)
+		
+		#display.blit(self.drawSurf, (self.rect.x, self.rect.y))
+		
+		display.blit(self.image, (self.pos.x, self.pos.y))
 
 	def collidePlatform(self, platforms, ramps=[]):
 		block_hit_list = collision_test(self.rect, platforms)
@@ -409,11 +420,14 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 			collision_types['data'].append([block, markers])
 
 			self.pos.y = self.rect.y
-			self.pos.x = self.rect.x
+			#self.pos.x = self.rect.x
 			self.isFalling = False
+			self.onGround = True
 			self.canDoubleJump = True
 			self.onGround = True
 			self.jumpCount = 0
 			self.isDoubleJumping = False
+
+			
 
 		return collision_types

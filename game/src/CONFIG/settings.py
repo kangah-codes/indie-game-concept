@@ -29,6 +29,6 @@ CLOCK = pygame.time.Clock()
 # screen sizes
 info = pygame.display.Info() # You have to call this before pygame.display.set_mode()
 screen_width, screen_height = info.current_w, info.current_h
-window_width, window_height = 900, 600
+window_width, window_height = 600, 400
 
 CHUNK_SIZE = 16

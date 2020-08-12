@@ -8,7 +8,7 @@ game = Game()
 p = Player()
 t = Tile('ice')
 
-game.playerGroup.append(p)
+game.player = p
 game.spriteGroup.add(Heart(p))
 game.tiles = t
 
