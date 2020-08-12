@@ -1,11 +1,12 @@
 """
-	Main game settings module
-	author: Joshua Akangah
-    date: 10/9/20
+Main game settings module
+author: Joshua Akangah
+date: 10/9/20
 """
 
 import pygame
 import os
+import time
 pygame.init()
 
 # base project directory
@@ -19,8 +20,7 @@ GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 
 # GLOBAL VARS
-FPS = 60
+FPS = 120
 CLOCK = pygame.time.Clock()
 
 # player deltatime update
-DT = FPS * 0.0001

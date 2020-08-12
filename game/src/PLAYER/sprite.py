@@ -22,9 +22,8 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 		self.image = self.state.get_current_image()
 		self.rect = self.image.get_rect()
 		self.mask = pygame.mask.from_surface(self.image)
-		self.dt = FPS/5000.0
+
 		self.flip = False
-		self.friction = -0.12
 		# using array to store player heart states
 		# 1 is full, 0.5 is half, 0 is empty
 		self.health = [1, 1, 1, 1, 1]
@@ -69,6 +68,7 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 		self.isReleasingBow = False
 
 		self.collisions = None
+		self.collisionTypes = {'top':False,'bottom':False,'right':False,'left':False}
 
 	def releaseBow(self):
 		self.isStretchingBow = False
@@ -106,35 +106,36 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 				# bring from full to half
 				continue
 		
-	def update(self, dt, tiles):
+	def update(self, dt):
+		# get current tick
+
+		self.dt = dt
+
+		if (self.pos.y + self.rect.height >= 600):
+			self.pos.y = 600 - self.rect.height
+			self.isFalling = False
+			self.canDoubleJump = True
+			self.onGround = True
+			self.jumpCount = 0
+			self.isDoubleJumping = False
 
 		# changing on ground state when player is jumping or falling
 		if self.isJumping or self.isFalling or self.isDoubleJumping:
 			self.onGround = False
 
-		self.simulateGravity()
+		self.simulateGravity(self.dt)
+
 		# stretching bow
 		if self.isStretchingBow:
 			self.state.animate(self.dt, True)
 		else:
 			self.state.animate(self.dt)
+
 		self.image = self.state.get_current_image()
 		# compute rect and mask for each frame
 		self.rect = self.image.get_rect()
 		self.mask = pygame.mask.from_surface(self.image)
-		self.posA, self.collisions = self.move(tiles)
-		self.rect.x, self.rect.y = self.pos.x, self.pos.y
-
-
-		# self.isFalling = False
-		# self.canDoubleJump = True
-		# self.onGround = True
-		# self.jumpCount = 0
-		# self.isDoubleJumping = False
-		self.move(tiles)
-
-		# if self.collisions.get('bottom') == True:
-		# 	self.acc.y = 0
+		self.rect.x, self.rect.y = self.pos
 
 		# checking if player can double jump
 		# i don't know why the first jump count is not added so I made this 1 instead of 2 and it works :)
@@ -142,6 +143,10 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 			self.canDoubleJump = True
 		else:
 			self.canDoubleJump = False
+
+		# player movement
+		if self.isMoving:
+			self.move(self.speed)
 
 		# updating player states
 		if not self.isDead:
@@ -197,14 +202,14 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 				and not self.usingBow \
 				and not self.isReleasingBow \
 				and not self.isPuttingBackSword:
-				self.state.animate(FPS/2500.0)
+				self.state.animate(self.dt)
 				self.update_state('jump_flip')
 			elif self.isAttacking\
 				and not self.isDrawingSword \
 				and not self.usingBow \
 				and not self.isReleasingBow \
 				and not self.isPuttingBackSword:
-				self.state.animate(FPS/2000.0)
+				self.state.animate(self.dt)
 				if self.attackType == 1:
 					self.update_state('attack_1')
 				elif self.attackType == 2:
@@ -224,12 +229,12 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 			elif self.isDrawingSword \
 				and not self.isReleasingBow \
 				and not self.usingBow:
-				self.state.animate(FPS/2500.0)
+				self.state.animate(self.dt*0.5)
 				self.update_state('draw_sword')
 			elif self.isPuttingBackSword \
 				and not self.isReleasingBow \
 				and not self.usingBow:
-				self.state.animate(FPS/250000.0)
+				self.state.animate(self.dt*0.5)
 				self.update_state('put_back')
 			elif self.usingBow:
 				if not self.isStretchingBow \
@@ -241,40 +246,29 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 					self.update_state('hold_bow')
 				elif not self.isStretchingBow \
 					and self.isReleasingBow:
-					self.state.animate(FPS/25000.0)
+					self.state.animate(self.dt*0.25)
 					# release whether player is still stretching or not
 					self.update_state('release_bow')
 				
 		else:
 			self.update_state('die')
 
-		# returning dt to normal when not flipping
-		if not self.isDoubleJumping \
-			or not self.isAttacking \
-			or not self.isPuttingBackSword:
-			self.dt = FPS/5000.0
-
 		# flipping player based on current move direction
 		self.flip = True if self.movingDirection == 0 else False
-
-		self.handleKeypress()
 
 		# stopping sliding animation when last frame is reached
 		if self.current_state == 'slide':
 			if self.state.is_last_image():
 				self.isSliding = False
-			else:
-				if self.flip:
-					self.acc.x = -0.5
-				else:
-					self.acc.x = 0.5
+			self.move(self.dt)
 		
 		# apply friction
-		self.acc.x += self.vel.x * self.friction
+		# self.acc.x += self.vel.x * self.friction * (self.dt/FPS*2)
 
-		# equations of motion
-		self.vel.x += self.acc.x
-		self.pos.x += self.vel.x + 0.5 * self.acc.x
+		# # equations of motion
+		# self.vel.x += self.acc.x * (self.dt/FPS*2)
+		# self.pos.x += self.vel.x + 0.5 * self.acc.x
+
 
 		# making sure we dont go over bounds
 		if self.pos.x + self.rect.width > 800:
@@ -296,6 +290,8 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 				else:
 					self.isStretchingBow = False
 			else:
+				if self.state.is_last_image():
+					self.usingBow = False
 				self.isStretchingBow = False
 			
 		if self.isReleasingBow:
@@ -352,72 +348,11 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 	def slide(self):
 		self.isSliding = True
 
-	def handleKeypress(self):
-		keyPress = pygame.key.get_pressed()
-		self.acc = pygame.math.Vector2(0, 800)
-		if keyPress[pygame.K_a]:
-			self.acc.x = -0.5
-			self.isMoving = True
-			self.movingDirection = 0
-			self.isStretchingBow = False
-			self.usingBow = False
-		elif keyPress[pygame.K_d]:
-			self.acc.x = 0.5
-			self.isMoving = True
-			self.movingDirection = 1
-			self.isStretchingBow = False
-			self.usingBow = False
-		elif keyPress[pygame.K_s]:
-			self.isMoving = False
-			self.isCrouching = True
-			self.isStretchingBow = False
-			self.usingBow = False
-		elif keyPress[pygame.K_u]:
-			self.useBow()
+	def move(self, accel):
+		if self.flip:
+			self.pos.x -= accel
 		else:
-			self.isStretchingBow = False
-			self.usingBow = False
-			self.isMoving = False
-			self.isCrouching = False
-
-	def playerCollideTile(self, tiles):
-		return [tile for tile in tiles if self.rect.colliderect(tile)]
-
-	def move(self, tiles):
-		collision_types = {'top':False,'bottom':False,'right':False,'left':False}
-		hit_list = self.playerCollideTile(tiles)
-		for tile in hit_list:
-			if self.acc.x > 0:
-				# moving right
-				self.rect.right = tile.left
-				collision_types['right'] = True
-				self.pos.x = self.rect.x
-			elif self.acc.x < 0:
-				self.rect.left = tile.right
-				collision_types['left'] = True
-				self.pos.x = self.rect.x
-
-		for tile in hit_list:
-			if self.acc.y >= 0:
-				self.rect.bottom = tile.top
-				collision_types['bottom'] = True
-				self.isFalling = False
-				self.canDoubleJump = True
-				self.onGround = True
-				self.jumpCount = 0
-				self.isDoubleJumping = False
-				self.pos.y = self.rect.y
-			elif self.acc.y < 0:
-				self.rect.top = tile
-				collision_types['top'] = True
-				self.isFalling = True
-				self.canDoubleJump = False
-				self.onGround = False
-				self.jumpCount = 0
-				self.isDoubleJumping = False
-				self.pos.y = self.rect.y
-		print(collision_types)		
-		return self.rect, collision_types
+			self.pos.x += accel
 		
 	def toggle_sword(self):
 		self.toggleSword = not self.toggleSword

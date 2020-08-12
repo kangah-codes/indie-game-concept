@@ -39,9 +39,10 @@ class PlayerAnimation:
         :return: None
         """
         if not hold:
+            # only update the animation when not holding
             self.current_time += dt
 
-            if self.current_time >= self.animation_time:
+            if self.current_time >= self.animation_time*FPS:
                 self.current_time = 0
                 self.index = (self.index + 1) % len(self.images)
                 self.image = self.images[self.index]
