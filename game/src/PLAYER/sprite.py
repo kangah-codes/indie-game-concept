@@ -376,5 +376,3 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 		if self.flip:
 			self.image = pygame.transform.flip(self.image, True, False)
 			self.drawSurf = pygame.transform.flip(self.drawSurf, True, False)
-				
-		display.blit(self.image, (self.pos.x, self.pos.y))

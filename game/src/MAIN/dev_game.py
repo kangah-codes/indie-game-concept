@@ -86,6 +86,8 @@ class Game:
     def update(self, dt):
         if self.player != None:
             self.player.update(self.dt)
+            
+            # self.playerRect = self.player.rect
 
         pygame.display.update()
 
@@ -107,7 +109,7 @@ class Game:
                     if tile[1] in [1, 2]:
                         self.tileRects.append(pygame.Rect(tile[0][0]*16,tile[0][1]*16,16,16))
 
-        self.display.blit(self.playerSurf, (self.playerRect.x-self.scroll[0], self.playerRect.y-self.scroll[1]))
+        self.display.blit(self.player.image, (self.playerRect.x-self.scroll[0], self.playerRect.y-self.scroll[1]))
 
         # draw player
         if self.player != None:
