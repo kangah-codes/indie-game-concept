@@ -8,6 +8,10 @@ import pygame
 import os
 import time
 import random
+import sys
+import noise
+
+from pygame.locals import *
 
 os.environ['SDL_VIDEO_CENTERED'] = '1'
 pygame.init()
@@ -27,8 +31,7 @@ FPS = 60
 CLOCK = pygame.time.Clock()
 
 # screen sizes
-info = pygame.display.Info() # You have to call this before pygame.display.set_mode()
-screen_width, screen_height = info.current_w, info.current_h
-window_width, window_height = 600, 400
+SCREEN_SIZE = (600, 400)
+DISPLAY_SIZE = (SCREEN_SIZE[0]//2, SCREEN_SIZE[1]//2)
 
-CHUNK_SIZE = 16
+CHUNK_SIZE = 8
