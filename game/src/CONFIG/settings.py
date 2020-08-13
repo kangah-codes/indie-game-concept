@@ -27,7 +27,7 @@ GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 
 # GLOBAL VARS
-FPS = 90
+FPS = 60
 CLOCK = pygame.time.Clock()
 
 # screen sizes

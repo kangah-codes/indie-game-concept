@@ -121,6 +121,7 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 		self.mask = pygame.mask.from_surface(self.image)
 		self.rect.x, self.rect.y = self.pos
 
+		print(self.rect)
 		print(self.mask.get_size())
 
 		# get current tick
