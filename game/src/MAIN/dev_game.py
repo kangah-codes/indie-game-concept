@@ -10,7 +10,6 @@ from GLOBAL.functions import *
 class Game:
     def __init__(self):
         self.entities = []
-        self.player = None
         self.isRunning = True
         self.screen = pygame.display.set_mode(SCREEN_SIZE, pygame.RESIZABLE)
         self.display = pygame.Surface(DISPLAY_SIZE)
@@ -45,6 +44,12 @@ class Game:
         self.playerSurf.fill(WHITE)
         self.playerRect = self.playerSurf.get_rect()
 
+        # temp anim
+        self.player = None
+
+        self.time_epoch = time.time()
+        self.dt = time.time() - self.time_epoch
+
     @staticmethod
     def setBiome(biome):
         pass
@@ -78,8 +83,11 @@ class Game:
 
         return chunk_data
 
-    def update(self):
-         pygame.display.update()
+    def update(self, dt):
+        if self.player != None:
+            self.player.update(self.dt)
+
+        pygame.display.update()
 
     def draw(self):
         self.tileRects = []
@@ -100,6 +108,10 @@ class Game:
                         self.tileRects.append(pygame.Rect(tile[0][0]*16,tile[0][1]*16,16,16))
 
         self.display.blit(self.playerSurf, (self.playerRect.x-self.scroll[0], self.playerRect.y-self.scroll[1]))
+
+        # draw player
+        if self.player != None:
+            self.player.draw(self.display)
 
         self.screen.blit(pygame.transform.scale(self.display, SCREEN_SIZE), (0, 0))
         self.screen.blit(self.renderFps(self.clock.get_fps()), (540,0))
@@ -138,6 +150,12 @@ class Game:
     def mainLoop(self):
         # main game loop
         while self.isRunning:
+            self.dt = time.time() - self.time_epoch
+
+            self.dt *= FPS
+
+            self.time_epoch = time.time()
+
             # screen scrolling
             self.trueScroll[0] += (self.playerRect.x - self.trueScroll[0]-152)/20
             self.trueScroll[1] += (self.playerRect.y - self.trueScroll[1]-106)/20
@@ -165,8 +183,9 @@ class Game:
 
             if collisions.get('bottom'):
                 self.playerMomentum = 0
+                self.player.stopFalling()
 
-            self.update()
+            self.update(self.dt)
             self.draw()
 
             # print(self.playerRight)

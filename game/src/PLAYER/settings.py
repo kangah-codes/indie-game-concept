@@ -5,4 +5,3 @@ date: 10/9/20
 """
 
 from CONFIG.settings import *
-from GLOBAL.collisions import *

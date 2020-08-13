@@ -9,14 +9,13 @@ from .settings import *
 from .animation import *
 from .physics import *
 
-
 class Player(pygame.sprite.Sprite, PhysicsObject):
 	def __init__(self):
 		pygame.sprite.Sprite.__init__(self)
 		PhysicsObject.__init__(self, 100, 100)
 		# load player animation and scale to twice the size
-		self.base_state = 'slide'
-		self.state = PlayerAnimation(player_states.get(self.base_state), 2.0)
+		self.base_state = 'idle_no_sword'
+		self.state = PlayerAnimation(player_states.get(self.base_state), 1.3)
 		self.current_state = self.base_state
 		self.image = self.state.get_current_image()
 		self.rect = self.image.get_rect()
@@ -75,6 +74,13 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 		self.isStretchingBow = False
 		self.isReleasingBow = True
 
+	def stopFalling(self):
+		self.isFalling = False
+		self.canDoubleJump = True
+		self.onGround = True
+		self.jumpCount = 0
+		self.isDoubleJumping = False
+
 	def decreaseHealth(self):
 		# minus health
 		for i in range(len(self.health)-1, -1, -1):
@@ -118,16 +124,9 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 		# get current tick
 		self.dt = dt
 
-		print(self.rect.height+self.pos.y)
-
-		if (self.pos.y + self.rect.height >= window_height):
-			self.pos.y = window_height - self.rect.height
-			self.isFalling = False
-			self.canDoubleJump = True
-			self.onGround = True
-			self.jumpCount = 0
-			self.isDoubleJumping = False
-
+		if (self.pos.y + self.rect.height >= DISPLAY_SIZE[1]):
+			self.pos.y = DISPLAY_SIZE[1] - self.rect.height
+			self.stopFalling
 
 		# changing on ground state when player is jumping or falling
 		if self.isJumping or self.isFalling or self.isDoubleJumping:
@@ -141,7 +140,6 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 		else:
 			self.state.animate(self.dt)
 
-		# print(self.rect.height)
 
 		# checking if player can double jump
 		# i don't know why the first jump count is not added so I made this 1 instead of 2 and it works :)
@@ -275,13 +273,6 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 		# self.vel.x += self.acc.x * (self.dt/FPS*2)
 		# self.pos.x += self.vel.x + 0.5 * self.acc.x
 
-
-		# making sure we dont go over bounds
-		if self.pos.x + self.rect.width > screen_width:
-			self.pos.x = screen_width - self.rect.width
-		if self.pos.x < 0:
-			self.pos.x = 0
-
 		# attacking
 		if self.isAttacking:
 			if self.state.is_last_image():
@@ -376,63 +367,14 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 	def update_state(self, state):
 		if self.current_state != state:
 			self.current_state = state
-			self.state = PlayerAnimation(player_states.get(self.current_state), 2.0)
+			self.state = PlayerAnimation(player_states.get(self.current_state), 1.3)
 
-	def draw(self, display):
-		self.drawSurf.fill(BLACK)
-		
+	def draw(self, display):		
 		for i in self.mask.outline():
 			pygame.draw.circle(self.drawSurf, WHITE, i, 1)
 
 		if self.flip:
 			self.image = pygame.transform.flip(self.image, True, False)
 			self.drawSurf = pygame.transform.flip(self.drawSurf, True, False)
-		
-		#display.blit(self.drawSurf, (self.rect.x, self.rect.y))
-		
+				
 		display.blit(self.image, (self.pos.x, self.pos.y))
-
-	def collidePlatform(self, platforms, ramps=[]):
-		block_hit_list = collision_test(self.rect, platforms)
-		collision_types = {'top':False,'bottom':False,'right':False,'left':False,'slant_bottom':False,'data':[]}
-
-		# added collision data to "collision_types". ignore the poorly chosen variable name
-		for block in block_hit_list:
-			markers = [False,False,False,False]
-			if not self.flip:
-				self.rect.right = block.left
-				collision_types['right'] = True
-				markers[0] = True
-			elif self.flip:
-				self.rect.left = block.right
-				collision_types['left'] = True
-				markers[1] = True
-			collision_types['data'].append([block, markers])
-			self.pos.x = self.rect.x
-			
-		block_hit_list = collision_test(self.rect, platforms)
-		for block in block_hit_list:
-			markers = [False,False,False,False]
-			if self.acc.y > 0:
-				self.rect.bottom = block.top
-				collision_types['bottom'] = True
-				markers[2] = True
-			elif self.acc.y < 0:
-				self.rect.top = block.bottom
-				collision_types['top'] = True
-				markers[3] = True
-
-			collision_types['data'].append([block, markers])
-
-			self.pos.y = self.rect.y
-			#self.pos.x = self.rect.x
-			self.isFalling = False
-			self.onGround = True
-			self.canDoubleJump = True
-			self.onGround = True
-			self.jumpCount = 0
-			self.isDoubleJumping = False
-
-			
-
-		return collision_types
