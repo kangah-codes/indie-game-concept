@@ -121,8 +121,9 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 		self.mask = pygame.mask.from_surface(self.image)
 		self.rect.x, self.rect.y = self.pos
 
-		print(self.rect)
-		print(self.mask.get_size())
+		if self.flip:
+			self.image = pygame.transform.flip(self.image, True, False)
+			self.drawSurf = pygame.transform.flip(self.drawSurf, True, False)
 
 		# get current tick
 		self.dt = dt
@@ -375,7 +376,3 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 	def draw(self, display):		
 		for i in self.mask.outline():
 			pygame.draw.circle(self.drawSurf, WHITE, i, 1)
-
-		if self.flip:
-			self.image = pygame.transform.flip(self.image, True, False)
-			self.drawSurf = pygame.transform.flip(self.drawSurf, True, False)

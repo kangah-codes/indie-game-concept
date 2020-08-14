@@ -38,7 +38,7 @@ class Game:
         # temp player movement
         self.playerMovement = [0, 0]
         self.playerMomentum = 0
-        self.playerSurf = pygame.Surface((10, 25))
+        self.playerSurf = pygame.Surface((15, 45))
         self.playerRight = False
         self.playerLeft = False
         self.playerSurf.fill(WHITE)
@@ -70,11 +70,15 @@ class Game:
                 
                 # using perlin noise for random terrain generation
                 height = int(noise.pnoise1(target_x*0.1, repeat=9999999) * 5)
-                if target_y > (8 - height):
+                top = int(noise.pnoise1(target_y*0.1) * 5)
+
+                print(top)
+
+                if target_y > (7 - height):
                     tile_type = 2 # dirt
-                elif target_y == 8 - height:
+                elif target_y == 7 - height:
                     tile_type = 1 # grass
-                elif target_y == 8 - height - 1:
+                elif target_y == 7 - height - 1:
                     if random.randint(1, 5) == 1:
                         # randomly place grass
                         tile_type = 3 
@@ -109,11 +113,14 @@ class Game:
                     if tile[1] in [1, 2]:
                         self.tileRects.append(pygame.Rect(tile[0][0]*16,tile[0][1]*16,16,16))
 
-        self.display.blit(self.player.image, (self.playerRect.x-self.scroll[0], self.playerRect.y-self.scroll[1]))
+        # self.display.blit(self.playerSurf, (self.playerRect.x-self.scroll[0], self.playerRect.y-self.scroll[1]))
+
+        self.player.rect.center = self.playerRect.center
+        self.display.blit(self.player.image, (self.player.rect.x-self.scroll[0], self.player.rect.y-self.scroll[1]))
 
         # draw player
-        if self.player != None:
-            self.player.draw(self.display)
+        # if self.player != None:
+        #     self.player.draw(self.display)
 
         self.screen.blit(pygame.transform.scale(self.display, SCREEN_SIZE), (0, 0))
         self.screen.blit(self.renderFps(self.clock.get_fps()), (540,0))
