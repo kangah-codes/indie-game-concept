@@ -113,10 +113,10 @@ class Game:
                     if tile[1] in [1, 2]:
                         self.tileRects.append(pygame.Rect(tile[0][0]*16,tile[0][1]*16,16,16))
 
-        # self.display.blit(self.playerSurf, (self.playerRect.x-self.scroll[0], self.playerRect.y-self.scroll[1]))
+        self.display.blit(self.playerSurf, (self.playerRect.x-self.scroll[0], self.playerRect.y-self.scroll[1]))
 
-        self.player.rect.center = self.playerRect.center
-        self.display.blit(self.player.image, (self.player.rect.x-self.scroll[0], self.player.rect.y-self.scroll[1]))
+        # self.player.rect.center = self.playerRect.center
+        # self.display.blit(self.player.image, (self.player.rect.x-self.scroll[0], self.player.rect.y-self.scroll[1]))
 
         # draw player
         # if self.player != None:
@@ -144,40 +144,40 @@ class Game:
                     self.playerRight = False
                 if event.key == pygame.K_w:
                     self.playerMomentum = -5
-                if event.key == pygame.K_a and not self.player.usingBow:
-                    self.player.isMoving = True
-                    self.player.movingDirection = 0
-                    self.player.isStretchingBow = False
-                    self.player.usingBow = False
-                if event.key == pygame.K_d and not self.player.usingBow:
-                    self.player.isMoving = True
-                    self.player.movingDirection = 1
-                    self.player.isStretchingBow = False
-                    self.player.usingBow = False
-                if event.key == pygame.K_s:
-                    self.player.isCrouching = True
-                    self.isMoving = False
-                    self.isCrouching = True
-                    self.isStretchingBow = False
-                    self.usingBow = False
-                if event.key == pygame.K_SPACE:
-                    self.player.perform_jump()
-                if event.key == pygame.K_z:
-                    self.player.slide()
-                if event.key == pygame.K_x:
-                    self.player.toggle_sword()
-                if event.key == pygame.K_g:
-                    self.player.attack(1)
-                if event.key == pygame.K_h:
-                    self.player.attack(2)
-                if event.key == pygame.K_k:
-                    self.player.player_die()
-                if event.key == pygame.K_t:
-                    self.player.decreaseHealth()
-                if event.key == pygame.K_y:
-                    self.player.increaseHealth()
-                if event.key == pygame.K_u:
-                    self.player.useBow()
+                # if event.key == pygame.K_a and not self.player.usingBow:
+                #     self.player.isMoving = True
+                #     self.player.movingDirection = 0
+                #     self.player.isStretchingBow = False
+                #     self.player.usingBow = False
+                # if event.key == pygame.K_d and not self.player.usingBow:
+                #     self.player.isMoving = True
+                #     self.player.movingDirection = 1
+                #     self.player.isStretchingBow = False
+                #     self.player.usingBow = False
+                # if event.key == pygame.K_s:
+                #     self.player.isCrouching = True
+                #     self.isMoving = False
+                #     self.isCrouching = True
+                #     self.isStretchingBow = False
+                #     self.usingBow = False
+                # if event.key == pygame.K_SPACE:
+                #     self.player.perform_jump()
+                # if event.key == pygame.K_z:
+                #     self.player.slide()
+                # if event.key == pygame.K_x:
+                #     self.player.toggle_sword()
+                # if event.key == pygame.K_g:
+                #     self.player.attack(1)
+                # if event.key == pygame.K_h:
+                #     self.player.attack(2)
+                # if event.key == pygame.K_k:
+                #     self.player.player_die()
+                # if event.key == pygame.K_t:
+                #     self.player.decreaseHealth()
+                # if event.key == pygame.K_y:
+                #     self.player.increaseHealth()
+                # if event.key == pygame.K_u:
+                #     self.player.useBow()
                     
 
             if event.type == pygame.KEYUP:
@@ -185,16 +185,16 @@ class Game:
                     self.playerRight = False
                 if event.key == pygame.K_a:
                     self.playerLeft = False
-                if event.key == pygame.K_u:
-                    self.player.releaseBow()
-                if event.key == pygame.K_a or event.key == pygame.K_d:
-                    self.player.isMoving = False
-                if event.key == pygame.K_s:
-                    self.player.isCrouching = False
-                    self.isMoving = False
-                    self.isCrouching = True
-                    self.isStretchingBow = False
-                    self.usingBow = False
+                # if event.key == pygame.K_u:
+                #     self.player.releaseBow()
+                # if event.key == pygame.K_a or event.key == pygame.K_d:
+                #     self.player.isMoving = False
+                # if event.key == pygame.K_s:
+                #     self.player.isCrouching = False
+                #     self.isMoving = False
+                #     self.isCrouching = True
+                #     self.isStretchingBow = False
+                #     self.usingBow = False
 
             if event.type == pygame.VIDEORESIZE:
                 global SCREEN_SIZE
@@ -237,7 +237,6 @@ class Game:
 
             if collisions.get('bottom'):
                 self.playerMomentum = 0
-                self.player.stopFalling()
 
             self.update(self.dt)
             self.draw()
