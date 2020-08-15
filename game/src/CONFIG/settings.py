@@ -31,7 +31,7 @@ FPS = 60
 CLOCK = pygame.time.Clock()
 
 # screen sizes
-SCREEN_SIZE = (600, 400)
+SCREEN_SIZE = (616, 400)
 DISPLAY_SIZE = (SCREEN_SIZE[0]//2, SCREEN_SIZE[1]//2)
 
 CHUNK_SIZE = 8
