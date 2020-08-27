@@ -1,5 +1,5 @@
 """
-Parralax background module 
+Parallax background module
 author: Joshua Akangah
 date: 15/8/20
 """
@@ -38,5 +38,9 @@ snow_tiles = {
 }
 
 clouds = {
-    1: pygame.image.load(os.path.join(BASE_DIR, 'assets/BIOMES/SNOW_MOUNTAINS/0.png'))
+    1: pygame.image.load(os.path.join(BASE_DIR, 'assets/BIOMES/SNOW_MOUNTAINS/0.png')),
+    2: pygame.image.load(os.path.join(BASE_DIR, 'assets/BIOMES/SNOW_MOUNTAINS/clouds_mg_2.png')),
+    3: pygame.image.load(os.path.join(BASE_DIR, 'assets/BIOMES/SNOW_MOUNTAINS/clouds_mg_3.png')),
+    4: pygame.image.load(os.path.join(BASE_DIR, 'assets/BIOMES/SNOW_MOUNTAINS/clouds_mg_1.png')),
+    5: pygame.image.load(os.path.join(BASE_DIR, 'assets/BIOMES/SNOW_MOUNTAINS/light.png')),
 }

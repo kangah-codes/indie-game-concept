@@ -10,7 +10,7 @@ import time
 import random
 import sys
 import noise
-
+import math
 from pygame.locals import *
 
 os.environ['SDL_VIDEO_CENTERED'] = '1'
@@ -27,7 +27,7 @@ GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 
 # GLOBAL VARS
-FPS = 60
+FPS = 120
 CLOCK = pygame.time.Clock()
 
 # screen sizes
