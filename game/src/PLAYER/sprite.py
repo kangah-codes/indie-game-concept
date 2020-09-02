@@ -17,7 +17,6 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
         self.rect = self.image.get_rect()
 
     def update(self, dt):
-        print(self.vel.y)
         self.rect.x, self.rect.x = self.pos.x, self.pos.y
 
         if self.pos.y + self.rect.height >= DISPLAY_SIZE[1]:
@@ -28,6 +27,15 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 
         self.simulateGravity(dt)
         self.simulateFriction()
+
+        self.acc = pygame.math.Vector2(0, 800)
+        keyPress = pygame.key.get_pressed()
+
+        if keyPress[pygame.K_d]:
+            self.acc.x = 0.1
+
+        if keyPress[pygame.K_a]:
+            self.acc.x = -0.1
 
     def draw(self, display):
         display.blit(self.image, self.pos)

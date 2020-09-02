@@ -57,15 +57,15 @@ class GameManager():
                 if event.key == pygame.K_w:
                     self.player.simulateJump()
 
-                if event.key == pygame.K_d:
-                    self.player.move(1)
+                # if event.key == pygame.K_d:
+                #     self.player.move(1)
+                #
+                # if event.key == pygame.K_a:
+                #     self.player.move(0)
 
-                if event.key == pygame.K_a:
-                    self.player.move(0)
-
-            if event.type == pygame.KEYUP:
-                if event.key == pygame.K_a or event.key == pygame.K_d:
-                    self.player.isMoving = False
+            # if event.type == pygame.KEYUP:
+            #     if event.key == pygame.K_a or event.key == pygame.K_d:
+            #         self.player.isMoving = False
 
     def mainLoop(self):
         while self.isRunning:

@@ -16,7 +16,7 @@ class PhysicsObject():
 
         self.pos = pygame.math.Vector2(x, y)
         self.acc = pygame.math.Vector2(0, 800)
-        self.vel = pygame.math.Vector2(0, 0)
+        self.vel = pygame.math.Vector2(0.1, 0)
         self.friction = -0.12
         self.speed = 3
 
@@ -41,15 +41,16 @@ class PhysicsObject():
         # apply friction
         self.acc.x += self.vel.x * self.friction
 
+        print(self.vel.x)
+
         # equations of motion
         self.vel.x += self.acc.x
         self.pos.x += self.vel.x + 0.5 * self.acc.x
 
     def move(self, direction):
-        self.isMoving = True
-        self.movingDirection = direction
+        self.acc = pygame.math.Vector2(0, 800)
 
         if direction == 1:
-            self.pos.x += self.speed
+            self.acc.x = 0.5
         elif direction == 0:
-            self.pos.x -= self.speed
+            self.acc.x = -0.5
