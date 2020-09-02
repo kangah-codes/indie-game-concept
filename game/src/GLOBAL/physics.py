@@ -8,10 +8,12 @@ from CONFIG.settings import *
 
 class PhysicsObject():
     def __init__(self, x, y):
-        self.accelX, self.accelY = 0, 800
-        self.velX, self.velY = 0, 0
         self.isFalling = True
         self.isJumping = False
+        self.isMoving = False
+        self.movingDirection = 1 # default movingDirection
+
+
         self.pos = pygame.math.Vector2(x, y)
         self.acc = pygame.math.Vector2(0, 800)
         self.vel = pygame.math.Vector2(0, 0)
@@ -32,8 +34,22 @@ class PhysicsObject():
                 self.isFalling = False
 
     def simulateJump(self):
-        self.vel.y = -800
-        print("Jump simulated")
+        self.isJumping = True
+        self.vel.y = -400
 
-    def simulateFriction(self, dt):
-        self.friction = -dt
+    def simulateFriction(self):
+        # apply friction
+        self.acc.x += self.vel.x * self.friction
+
+        # equations of motion
+        self.vel.x += self.acc.x
+        self.pos.x += self.vel.x + 0.5 * self.acc.x
+
+    def move(self, direction):
+        self.isMoving = True
+        self.movingDirection = direction
+
+        if direction == 1:
+            self.pos.x += self.speed
+        elif direction == 0:
+            self.pos.x -= self.speed

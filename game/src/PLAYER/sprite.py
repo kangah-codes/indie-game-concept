@@ -17,10 +17,17 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
         self.rect = self.image.get_rect()
 
     def update(self, dt):
+        print(self.vel.y)
         self.rect.x, self.rect.x = self.pos.x, self.pos.y
 
-        if self.pos.y + self.rect.height < DISPLAY_SIZE[1]:
-            self.simulateGravity(dt)
+        if self.pos.y + self.rect.height >= DISPLAY_SIZE[1]:
+            self.isFalling = False
+
+        if self.isMoving:
+            self.move(self.movingDirection)
+
+        self.simulateGravity(dt)
+        self.simulateFriction()
 
     def draw(self, display):
         display.blit(self.image, self.pos)
