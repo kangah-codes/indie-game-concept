@@ -17,12 +17,12 @@ class PhysicsObject():
         self.vel = pygame.math.Vector2(0, 0)
         self.friction = -0.12
         self.speed = 3
-    
+
     def simulateGravity(self, dt):
         if self.isFalling or self.isJumping:
             self.pos.y += self.vel.y * (dt/FPS*2)
             self.vel.y += self.acc.y * (dt/FPS*2)
-            
+
             if self.vel.y >= 0:
                 self.isJumping = False
                 self.isFalling = True
@@ -30,6 +30,10 @@ class PhysicsObject():
             elif self.vel.y < 0:
                 self.isJumping = True
                 self.isFalling = False
-    
+
+    def simulateJump(self):
+        self.vel.y = -800
+        print("Jump simulated")
+
     def simulateFriction(self, dt):
         self.friction = -dt
