@@ -1,7 +1,10 @@
-from MAIN.dev_game import *
+from MAIN.game_manager import *
 from PLAYER.sprite import *
-from WORLD.parallax import *
 
-testGame = Game()
+testGame = GameManager()
 
+player = Player()
+
+testGame.player = player
 testGame.mainLoop()
+
