@@ -5,7 +5,7 @@
 """
 from CONFIG.settings import *
 
-class PlayerAnimation:
+class Animation:
     """
     Class animation
     """
