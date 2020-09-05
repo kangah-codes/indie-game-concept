@@ -78,8 +78,6 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
         self.doAnimations(dt)
         self.updateStates()
 
-        # print(self.current_state)
-        print(self.is_drawing_sword)
 
     def doAnimations(self, dt):
         # locking frames to last
@@ -91,7 +89,11 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
                     self.is_sliding = False
                     self.isMoving = False
         else:
-            self.animation.animate(dt)
+            # flipping
+            if self.is_double_jumping:
+                self.animation.animate(dt*3)
+            else:
+                self.animation.animate(dt)
 
 
     def draw(self, display):
@@ -116,8 +118,6 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
             self.is_walking = True
 
         if (keyPress[pygame.K_a] or keyPress[pygame.K_d]) or (keyPress[pygame.K_RIGHT] or keyPress[pygame.K_LEFT]):
-            self.isMoving = True
-
             if self.is_crouching or self.is_walking:
                 self.acc.x = 0.1 if not self.flip else -0.1
             else:
@@ -149,63 +149,42 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
         self.isFalling
         self.isMoving
         """
-        # default
-        if not self.is_sliding and not self.is_crouching\
-            and not self.isMoving and not self.is_running\
-            and not self.is_walking and not self.is_running_fast\
-            and not (self.isFalling or self.isJumping)\
-            and not self.is_drawing_sword: self.setState(self.base_state)
+        player_state = self.base_state
 
-        # player sliding
-        if self.is_sliding and not self.is_crouching\
-            and not self.is_running and not self.is_walking\
-            and not self.is_running_fast and \
-            not (self.isFalling or self.isJumping): self.setState('slide')
+        if self.is_running:
+            player_state = 'sprint_slow'
 
-        # player running
-        if self.is_running and not self.is_crouching\
-            and not self.is_walking and not self.is_sliding\
-            and not self.is_running_fast and\
-            not self.isFalling and not self.isJumping: self.setState('sprint_slow')
+        if self.is_running_fast:
+            player_state = 'sprint_fast'
 
-        # jumping
-        if self.isJumping and not self.isFalling:
+        if self.isJumping:
+            player_state = 'jump'
+
+        if self.is_double_jumping:
+            player_state = 'jump_flip'
+
+        if self.isFalling:
             if self.is_double_jumping:
-                self.setState('jump_flip')
+                player_state = 'jump_flip'
             else:
-                self.setState('jump')
+                player_state = 'fall'
 
-        # falling
-        if self.isFalling and not self.isJumping: self.setState('fall')
+        if self.is_crouching:
+            if self.isMoving:
+                player_state = 'crouch_walk'
+            else:
+                player_state = 'crouch'
 
-        # crouching
-        if self.is_crouching and not self.isMoving\
-            and not self.is_running and not self.is_sliding\
-            and not self.is_walking and not self.is_running_fast\
-            and not (self.isJumping or self.isFalling): self.setState('crouch')
+        if self.is_walking:
+            player_state = 'walk'
 
-        # crouch walking
-        if self.is_crouching and self.isMoving: self.setState('crouch_walk')
+        if self.is_sliding:
+            player_state = 'slide'
 
-        # is_walking
-        if self.is_walking and not self.isJumping\
-            and not self.is_sliding and not self.is_crouching\
-            and not self.is_running\
-            and not self.is_running_fast: self.setState('walk')
-
-        if self.is_drawing_sword: self.setState('draw_sword')
-
-        # crouch walk
-        # if self.is_crouching and self.isMoving\
-        #     and not self.is_running and not self.is_sliding\
-        #     and not self.is_walking and not self.is_running_fast\
-        #     and not (self.isJumping or self.isFalling):
-        #     self.setState('crouch_walk')
+        self.setState(player_state)
 
     def setState(self, state):
         if self.current_state != state:
-            # print("NO")
-            # print(self.current_state)
             self.current_state = state
             self.animation = Animation(player_states.get(self.current_state), 1.0)
 
