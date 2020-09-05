@@ -74,6 +74,9 @@ class GameManager():
                 if event.key == pygame.K_z:
                     self.player.slide()
 
+                if event.key == pygame.K_x:
+                    self.player.toggleSword()
+
     def mainLoop(self):
         while self.isRunning:
             self.handleEvent()
