@@ -87,3 +87,6 @@ class Animation:
                 self.alpha += self.blink_speed
                 # handle blit
             N -= 1
+
+    def __str__(self):
+        return f'{self.images}'
