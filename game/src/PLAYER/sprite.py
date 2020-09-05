@@ -30,6 +30,8 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
         self.is_running_fast = False
         self.is_walking = False
         self.is_sliding = False
+        self.is_holding_sword = False
+        self.is_drawing_sword = False
 
         # additional
         self.can_double_jump = True
@@ -75,6 +77,9 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
         self.handleKeypress()
         self.doAnimations(dt)
         self.updateStates()
+
+        # print(self.current_state)
+        print(self.is_drawing_sword)
 
     def doAnimations(self, dt):
         # locking frames to last
@@ -148,7 +153,8 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
         if not self.is_sliding and not self.is_crouching\
             and not self.isMoving and not self.is_running\
             and not self.is_walking and not self.is_running_fast\
-            and not (self.isFalling or self.isJumping): self.setState(self.base_state)
+            and not (self.isFalling or self.isJumping)\
+            and not self.is_drawing_sword: self.setState(self.base_state)
 
         # player sliding
         if self.is_sliding and not self.is_crouching\
@@ -187,6 +193,8 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
             and not self.is_running\
             and not self.is_running_fast: self.setState('walk')
 
+        if self.is_drawing_sword: self.setState('draw_sword')
+
         # crouch walk
         # if self.is_crouching and self.isMoving\
         #     and not self.is_running and not self.is_sliding\
@@ -196,6 +204,8 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 
     def setState(self, state):
         if self.current_state != state:
+            # print("NO")
+            # print(self.current_state)
             self.current_state = state
             self.animation = Animation(player_states.get(self.current_state), 1.0)
 
@@ -213,3 +223,11 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
             self.touchingGround = False
             self.vel.y = -400
             self.jump_count += 1
+
+    def toggleSword(self):
+        self.is_holding_sword = not self.is_holding_sword
+
+        if not self.is_holding_sword:
+            self.is_drawing_sword = True
+        else:
+            self.is_drawing_sword = False
