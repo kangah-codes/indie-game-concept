@@ -67,8 +67,12 @@ class GameManager():
                 self.screen = pygame.display.set_mode(SCREEN_SIZE, pygame.RESIZABLE)
 
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_w:
+                # handle player movements
+                if event.key == pygame.K_w or event.key == pygame.K_UP:
                     self.player.simulateJump()
+
+                if event.key == pygame.K_z:
+                    self.player.slide()
 
     def mainLoop(self):
         while self.isRunning:
