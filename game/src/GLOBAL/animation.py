@@ -47,6 +47,9 @@ class Animation:
                 self.index = (self.index + 1) % len(self.images)
                 self.image = self.images[self.index]
 
+    def reset_animation(self):
+        self.current_frame = 0
+
     def get_current_image(self):
         """
         Method to return the current image in the animation
