@@ -43,6 +43,8 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
         self.is_releasing_bow = False
         self.knock_down = False
         self.is_knocked_down = False
+        self.get_up = False
+        self.is_getting_up = False
 
         # additional
         self.can_double_jump = True
@@ -66,7 +68,8 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
             'release_bow',
             'release_bow_jumping',
             'stretch_bow_jumping',
-            'knock_down'
+            'knock_down',
+            'get_up'
         ]
 
         # states to not allow movement in
@@ -80,7 +83,8 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
             'cast_spell_loop',
             'release_bow',
             'release_bow_jumping',
-            'knock_down'
+            'knock_down',
+            'get_up'
         ]
 
         self.cast_spell_press = False
@@ -130,6 +134,12 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
             if self.current_state in ['knock_down']:
                 self.knock_down = False
                 self.is_knocked_down = False
+                self.is_getting_up = True
+
+            if self.current_state in ['get_up']:
+                if self.animation.is_last_image():
+                    self.is_getting_up = False
+
         elif self.energy_level <= 0:
             self.energy_level = 0
 
@@ -189,8 +199,10 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
                 if self.is_releasing_bow:
                     self.is_releasing_bow = False
                 if self.knock_down:
-                    #self.knock_down = False
                     self.is_knocked_down = True
+                # if self.is_getting_up:
+                #     self.is_getting_up = False
+                #     self.get_up = False
         else:
             # flipping
             if self.is_double_jumping:
@@ -368,12 +380,15 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
         if self.knock_down:
             player_state = 'knock_down'
 
+        if self.is_getting_up:
+            player_state = 'get_up'
+
         self.setState(player_state)
 
         # print(self.current_state, self.is_drawing_sword)
         # print(self.is_drawing_sword, self.is_holding_sword, self.is_sheathing_sword)
         # print(self.cast_spell_press)
-        # print(self.is_releasing_bow)
+        print(self.is_getting_up)
 
     def setState(self, state):
         if self.current_state != state:
@@ -417,3 +432,6 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
     def knockDown(self):
         self.knock_down = True
         self.energy_level -= 50
+
+    def getUp(self):
+        self.is_getting_up = True
