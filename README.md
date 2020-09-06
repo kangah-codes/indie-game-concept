@@ -2,7 +2,7 @@
 This is a project for an infinite world indie game concept I'm starting to build with Python and Pygame
 
 # Development Logs
-*** Dev Release 0.1.0 - 6/09/20***
+__** Dev Release 0.1.0 - 6/09/20**__
 
 1. What's Implemented
     - Player States (Idle, walk, run, crouch, etc...)
