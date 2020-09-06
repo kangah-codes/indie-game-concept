@@ -44,7 +44,7 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
         self.is_double_jumping = False
         self.jump_count = 0
         self.attack_level = 1
-        self.energy_level = 0
+        self.energy_level = 100
         # states to freeze animations with
         self.look_states = ['jump', 'slide', 'draw_sword', 'put_back', 'sword_attack_1', 'sword_attack_2', 'sword_attack_3', 'cast_spell', 'cast_spell_loop']
         self.cast_spell_press = False
@@ -86,8 +86,8 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
         if self.is_sliding:
             self.acc.x = 0.3 if not self.flip else -0.3
 
-        if self.energy_level >= FPS*3:
-            self.energy_level = FPS*3
+        if self.energy_level >= 100:
+            self.energy_level = 100
         elif self.energy_level <= 0:
             self.energy_level = 0
 
@@ -183,8 +183,9 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 
         # handle attack 3 combo
         if keyPress[pygame.K_g] and keyPress[pygame.K_h]:
-            if self.energy_level > (FPS*3)/2:
+            if self.energy_level > 50:
                 self.attack(3)
+                self.energy_level -= 10
 
         if keyPress[pygame.K_j]:
             self.cast_spell_press = True
@@ -256,13 +257,13 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
         if self.is_sliding:
             player_state = 'slide'
 
-        if self.is_drawing_sword:
+        if self.is_drawing_sword and not (self.isJumping or self.isFalling):
             player_state = 'draw_sword'
 
-        if self.is_holding_sword and not self.isMoving:
+        if self.is_holding_sword and not self.isMoving and not (self.isJumping or self.isFalling):
             player_state = 'idle_sword'
 
-        if self.is_sheathing_sword and not self.isMoving:
+        if self.is_sheathing_sword and not self.isMoving and not (self.isJumping or self.isFalling):
             player_state = 'put_back'
 
         if self.is_attacking:
