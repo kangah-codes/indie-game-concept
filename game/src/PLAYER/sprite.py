@@ -38,6 +38,9 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
         self.is_attacking = False
         self.cast_spell = False
         self.is_casting_spell = False
+        self.shoot_bow = False
+        self.is_shooting_bow = False
+        self.is_releasing_bow = False
 
         # additional
         self.can_double_jump = True
@@ -46,8 +49,23 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
         self.attack_level = 1
         self.energy_level = 100
         # states to freeze animations with
-        self.look_states = ['jump', 'slide', 'draw_sword', 'put_back', 'sword_attack_1', 'sword_attack_2', 'sword_attack_3', 'cast_spell', 'cast_spell_loop']
+        self.look_states = [
+            'jump',
+            'slide',
+            'draw_sword',
+            'put_back',
+            'sword_attack_1',
+            'sword_attack_2',
+            'sword_attack_3',
+            'cast_spell',
+            'cast_spell_loop',
+            'shoot_bow_standing',
+            'release_bow',
+            'release_bow_jumping',
+            'stretch_bow_jumping'
+        ]
         self.cast_spell_press = False
+        self.shoot_bow_press = False
 
     def update(self, dt):
         self.rect.x, self.rect.y = self.pos.x, self.pos.y
@@ -95,6 +113,12 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
         if self.current_state in [self.base_state, 'idle_sword']:
             self.energy_level += 0.1
 
+        # stop shooting bow if key is released
+        if not self.shoot_bow_press:
+            if self.is_shooting_bow and self.animation.is_last_image():
+                self.is_shooting_bow = False
+                self.is_releasing_bow = True
+
         self.simulateGravity(dt)
         self.simulateMotion()
         self.handleKeypress()
@@ -131,6 +155,15 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
                         self.animation.animate(dt)
                     else:
                         self.is_casting_spell = False
+                if self.shoot_bow:
+                    self.shoot_bow = False
+                    self.is_shooting_bow = True
+                if self.is_shooting_bow:
+                    if not self.shoot_bow_press:
+                        self.is_shooting_bow = False
+                        self.is_releasing_bow = True
+                if self.is_releasing_bow:
+                    self.is_releasing_bow = False
         else:
             # flipping
             if self.is_double_jumping:
@@ -175,10 +208,10 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
             self.isMoving = False
             self.is_running = False
 
-        if keyPress[pygame.K_s]or keyPress[pygame.K_DOWN]:
+        if keyPress[pygame.K_s] or keyPress[pygame.K_DOWN]:
             self.is_crouching = True
 
-        if not (keyPress[pygame.K_s] or keyPress[pygame.K_DOWN]):
+        else:
             self.is_crouching = False
 
         # handle attack 3 combo
@@ -190,11 +223,15 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
         if keyPress[pygame.K_j]:
             self.cast_spell_press = True
             if self.is_casting_spell:
-                self.is_casting_spell = True
+                # self.is_casting_spell = True
                 self.energy_level -= 2
-
-        if not keyPress[pygame.K_j]:
+        else:
             self.cast_spell_press = False
+
+        if keyPress[pygame.K_b]:
+            self.shoot_bow_press = True
+        else:
+            self.shoot_bow_press = False
 
 
     def updateStates(self):
@@ -233,13 +270,13 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
             if self.is_sheathing_sword:
                 player_state = 'put_back'
 
-        if self.isJumping:
+        if self.isJumping and not (self.shoot_bow or self.is_shooting_bow):
             player_state = 'jump'
 
         if self.is_double_jumping:
             player_state = 'jump_flip'
 
-        if self.isFalling:
+        if self.isFalling and not (self.shoot_bow or self.is_shooting_bow):
             if self.is_double_jumping:
                 player_state = 'jump_flip'
             else:
@@ -257,13 +294,13 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
         if self.is_sliding:
             player_state = 'slide'
 
-        if self.is_drawing_sword and not (self.isJumping or self.isFalling):
+        if self.is_drawing_sword and not (self.isJumping or self.isFalling or self.is_crouching):
             player_state = 'draw_sword'
 
-        if self.is_holding_sword and not self.isMoving and not (self.isJumping or self.isFalling):
+        if self.is_holding_sword and not self.isMoving and not (self.isJumping or self.isFalling or self.is_crouching):
             player_state = 'idle_sword'
 
-        if self.is_sheathing_sword and not self.isMoving and not (self.isJumping or self.isFalling):
+        if self.is_sheathing_sword and not self.isMoving and not (self.isJumping or self.isFalling or self.is_crouching):
             player_state = 'put_back'
 
         if self.is_attacking:
@@ -281,11 +318,30 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
         if self.is_casting_spell:
             player_state = 'cast_spell_loop'
 
+        if self.shoot_bow:
+            if self.isJumping or self.isFalling:
+                player_state = 'stretch_bow_jumping'
+            else:
+                player_state = 'shoot_bow_standing'
+
+        if self.is_shooting_bow:
+            if self.isFalling or self.isJumping:
+                player_state = 'hold_bow_jumping'
+            else:
+                player_state = 'hold_bow'
+
+        if self.is_releasing_bow:
+            if self.isFalling or self.isJumping:
+                player_state = 'release_bow_jumping'
+            else:
+                player_state = 'release_bow'
+
         self.setState(player_state)
 
         # print(self.current_state, self.is_drawing_sword)
         # print(self.is_drawing_sword, self.is_holding_sword, self.is_sheathing_sword)
         # print(self.cast_spell_press)
+        print(self.is_releasing_bow)
 
     def setState(self, state):
         if self.current_state != state:
@@ -322,3 +378,6 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
     def castSpell(self):
         if self.energy_level > 2:
             self.cast_spell = True
+
+    def shootBow(self):
+        self.shoot_bow = True
