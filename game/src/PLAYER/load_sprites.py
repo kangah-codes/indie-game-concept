@@ -230,9 +230,6 @@ player_states = {
 	],
 	'punch_1': [
 		os.path.join(BASE_DIR, 'assets/PLAYER/ATTACK/PUNCH_1/adventurer-punch-00.png'),
-		os.path.join(BASE_DIR, 'assets/PLAYER/ATTACK/PUNCH_1/adventurer-punch-01.png'),
-		os.path.join(BASE_DIR, 'assets/PLAYER/ATTACK/PUNCH_1/adventurer-punch-02.png'),
-		os.path.join(BASE_DIR, 'assets/PLAYER/ATTACK/PUNCH_1/adventurer-punch-03.png'),
 		os.path.join(BASE_DIR, 'assets/PLAYER/ATTACK/PUNCH_1/adventurer-punch-04.png'),
 		os.path.join(BASE_DIR, 'assets/PLAYER/ATTACK/PUNCH_1/adventurer-punch-05.png'),
 		os.path.join(BASE_DIR, 'assets/PLAYER/ATTACK/PUNCH_1/adventurer-punch-06.png'),

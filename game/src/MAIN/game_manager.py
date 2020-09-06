@@ -102,6 +102,10 @@ class GameManager():
                 if event.key == pygame.K_k:
                     self.player.knockDown()
 
+                # punch
+                if event.key == pygame.K_n:
+                    self.player.punch()
+
 
     def mainLoop(self):
         while self.isRunning:
