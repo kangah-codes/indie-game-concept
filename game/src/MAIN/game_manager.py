@@ -97,6 +97,11 @@ class GameManager():
                 if event.key == pygame.K_b:
                     self.player.shootBow()
 
+                ## experimental
+                ## knock player down
+                if event.key == pygame.K_k:
+                    self.player.knockDown()
+
 
     def mainLoop(self):
         while self.isRunning:
