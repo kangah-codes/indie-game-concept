@@ -13,5 +13,5 @@ __** Dev Release 0.1.0 - 6/09/20**__
     - Physics engine for gravity, friction, etc...
     - Animation engine
 
-2. In action
+2. In action <br />
 ![SRC](snapshots/dev_release_1.gif)
