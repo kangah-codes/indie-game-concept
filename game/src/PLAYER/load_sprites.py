@@ -116,8 +116,6 @@ player_states = {
 		os.path.join(BASE_DIR, 'assets/PLAYER/BOW/SHOOT_STAND/5.png'),
 		os.path.join(BASE_DIR, 'assets/PLAYER/BOW/SHOOT_STAND/6.png'),
 		os.path.join(BASE_DIR, 'assets/PLAYER/BOW/SHOOT_STAND/7.png'),
-		os.path.join(BASE_DIR, 'assets/PLAYER/BOW/SHOOT_STAND/8.png'),
-		os.path.join(BASE_DIR, 'assets/PLAYER/BOW/SHOOT_STAND/9.png'),
 	],
 	'shoot_bow_jumping': [
 		os.path.join(BASE_DIR, 'assets/PLAYER/BOW/SHOOT_JUMP/1.png'),
@@ -176,21 +174,25 @@ player_states = {
 		os.path.join(BASE_DIR, 'assets/PLAYER/SWORD/PUT_BACK/put_back_2.png'),
 		os.path.join(BASE_DIR, 'assets/PLAYER/SWORD/PUT_BACK/put_back_3.png'),
 	],
-	'shoot_stand': [
-		os.path.join(BASE_DIR, 'assets/PLAYER/BOW/SHOOT_STAND/1.png'),
-		os.path.join(BASE_DIR, 'assets/PLAYER/BOW/SHOOT_STAND/2.png'),
-		os.path.join(BASE_DIR, 'assets/PLAYER/BOW/SHOOT_STAND/3.png'),
-		os.path.join(BASE_DIR, 'assets/PLAYER/BOW/SHOOT_STAND/4.png'),
-		os.path.join(BASE_DIR, 'assets/PLAYER/BOW/SHOOT_STAND/5.png'),
-		os.path.join(BASE_DIR, 'assets/PLAYER/BOW/SHOOT_STAND/6.png'),
-		os.path.join(BASE_DIR, 'assets/PLAYER/BOW/SHOOT_STAND/7.png'),
-	],
 	'release_bow': [
 		os.path.join(BASE_DIR, 'assets/PLAYER/BOW/RELEASE/8.png'),
 		os.path.join(BASE_DIR, 'assets/PLAYER/BOW/RELEASE/9.png'),
 	],
+	'release_bow_jumping': [
+		os.path.join(BASE_DIR, 'assets/PLAYER/BOW/RELEASE_JUMP/5.png'),
+		os.path.join(BASE_DIR, 'assets/PLAYER/BOW/RELEASE_JUMP/6.png'),
+	],
 	'hold_bow': [
 		os.path.join(BASE_DIR, 'assets/PLAYER/BOW/SHOOT_STAND/7.png'),
+		os.path.join(BASE_DIR, 'assets/PLAYER/BOW/SHOOT_STAND/6.png'),
+	],
+	'hold_bow_jumping': [
+		os.path.join(BASE_DIR, 'assets/PLAYER/BOW/HOLD_JUMPING/3.png'),
+		os.path.join(BASE_DIR, 'assets/PLAYER/BOW/HOLD_JUMPING/4.png'),
+	],
+	'stretch_bow_jumping': [
+		os.path.join(BASE_DIR, 'assets/PLAYER/BOW/SHOOT_JUMP/1.png'),
+		os.path.join(BASE_DIR, 'assets/PLAYER/BOW/SHOOT_JUMP/2.png'),
 	],
 	'knock_down': [
 		os.path.join(BASE_DIR, 'assets/PLAYER/KNOCK_DOWN/adventurer-knock-dwn-00.png'),
