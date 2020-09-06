@@ -42,7 +42,7 @@ class GameManager():
         self.display.blit(self.renderFps(self.clock.get_fps()), (0,0))
         self.display.blit(accVel[0], (0,15))
         self.display.blit(accVel[1], (0,30))
-        pygame.draw.rect(self.display, BLUE, (self.player.pos.x, self.player.pos.y - 10, self.player.energy_level/9, 5))
+        pygame.draw.rect(self.display, BLUE, (self.player.pos.x, self.player.pos.y - 10, self.player.energy_level/5, 5))
         self.screen.blit(pygame.transform.scale(self.display, SCREEN_SIZE), (0, 0))
 
 
@@ -92,6 +92,10 @@ class GameManager():
                 # cast spell
                 if event.key == pygame.K_j:
                     self.player.castSpell()
+
+                # shooting bow
+                if event.key == pygame.K_b:
+                    self.player.shootBow()
 
 
     def mainLoop(self):
