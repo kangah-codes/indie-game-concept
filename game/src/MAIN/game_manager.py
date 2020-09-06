@@ -42,7 +42,10 @@ class GameManager():
         self.display.blit(self.renderFps(self.clock.get_fps()), (0,0))
         self.display.blit(accVel[0], (0,15))
         self.display.blit(accVel[1], (0,30))
+        pygame.draw.rect(self.display, BLUE, (self.player.pos.x, self.player.pos.y - 10, self.player.energy_level/9, 5))
         self.screen.blit(pygame.transform.scale(self.display, SCREEN_SIZE), (0, 0))
+
+
 
         pygame.display.update()
 
@@ -71,11 +74,25 @@ class GameManager():
                 if event.key == pygame.K_w or event.key == pygame.K_UP:
                     self.player.simulateJump()
 
+                # player slide
                 if event.key == pygame.K_z:
                     self.player.slide()
 
+                # toggle sword
                 if event.key == pygame.K_x:
                     self.player.toggleSword()
+
+                # player attacks
+                if event.key == pygame.K_g:
+                    self.player.attack(1)
+
+                if event.key == pygame.K_h:
+                    self.player.attack(2)
+
+                # cast spell
+                if event.key == pygame.K_j:
+                    self.player.castSpell()
+
 
     def mainLoop(self):
         while self.isRunning:
