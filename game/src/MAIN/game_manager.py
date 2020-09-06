@@ -4,6 +4,7 @@ Game manager script
 
 from CONFIG.settings import *
 from GLOBAL.functions import *
+from GLOBAL.font import *
 
 class GameManager():
     def __init__(self):
@@ -17,6 +18,8 @@ class GameManager():
 
         self.screen = pygame.display.set_mode(SCREEN_SIZE, pygame.RESIZABLE)
         self.display = pygame.Surface(DISPLAY_SIZE)
+        self.FONT = generate_font(os.path.join(BASE_DIR, 'assets/UI/FONT/small_font.png'), FONT_DAT, 5, 8, (255, 255, 255))
+
 
         self.time_epoch = time.time()
         self.dt = time.time() - self.time_epoch
@@ -39,14 +42,11 @@ class GameManager():
         accVel = self.renderAccVel()
         self.display.fill(BLACK)
         self.player.draw(self.display)
-        self.display.blit(self.renderFps(self.clock.get_fps()), (0,0))
-        self.display.blit(accVel[0], (0,15))
-        self.display.blit(accVel[1], (0,30))
         pygame.draw.rect(self.display, BLUE, (self.player.pos.x, self.player.pos.y - 10, self.player.energy_level/5, 5))
+        show_text(f'FPS {round(self.clock.get_fps())}', 0, 0, 1, 9999, self.FONT, self.display)
+        show_text(accVel[0], 0, 15, 1, 9999, self.FONT, self.display)
+        show_text(accVel[1], 0, 30, 1, 9999, self.FONT, self.display)
         self.screen.blit(pygame.transform.scale(self.display, SCREEN_SIZE), (0, 0))
-
-
-
         pygame.display.update()
 
     def renderFps(self, fps):
@@ -54,8 +54,8 @@ class GameManager():
 
     def renderAccVel(self):
         return [
-            self.font.render(f"Acceleration {self.player.acc}", 0, GREEN),
-            self.font.render(f"Velocity {self.player.vel}", 0, GREEN)
+            f"Acceleration {self.player.acc}",
+            f"Velocity {self.player.vel}"
         ]
 
     def handleEvent(self):

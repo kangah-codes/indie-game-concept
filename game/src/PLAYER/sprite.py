@@ -90,6 +90,8 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
             'cast_spell_loop',
             'release_bow',
             'release_bow_jumping',
+            'shoot_bow_standing',
+            'hold_bow',
             'knock_down',
             'get_up',
             'punch_1',
