@@ -84,10 +84,16 @@ class GameManager():
 
                 # player attacks
                 if event.key == pygame.K_g:
-                    self.player.attack(1)
+                    if not self.player.is_holding_sword:
+                        self.player.punch()
+                    else:
+                        self.player.attack(1)
 
                 if event.key == pygame.K_h:
-                    self.player.attack(2)
+                    if not self.player.is_holding_sword:
+                        self.player.punch(kick=True)
+                    else:
+                        self.player.attack(2)
 
                 # cast spell
                 if event.key == pygame.K_j:
@@ -101,10 +107,6 @@ class GameManager():
                 ## knock player down
                 if event.key == pygame.K_k:
                     self.player.knockDown()
-
-                # punch
-                if event.key == pygame.K_n:
-                    self.player.punch()
 
 
     def mainLoop(self):

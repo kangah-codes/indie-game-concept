@@ -22,7 +22,7 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
         self.animation_rect = self.current_frame.get_rect()
 
         self.image = pygame.Surface((20, self.animation_rect.height - 5))
-        self.image.fill(WHITE)
+        # self.image.fill(WHITE)
         self.rect = self.image.get_rect()
 
         # states
@@ -52,7 +52,7 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
         self.is_double_jumping = False
         self.jump_count = 0
         self.attack_level = 1
-        self.punch_levels = [1, 2, 3]
+        self.punch_levels = [1, 2]
         self.punch_level = random.choice(self.punch_levels)
         self.energy_level = 100
 
@@ -180,6 +180,7 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
                 if self.is_attacking:
                     self.animation.animate(dt*3)
                 elif self.is_punching:
+                    self.is_attacking = True
                     self.animation.animate(dt*2)
                 else:
                     self.animation.animate(dt)
@@ -196,6 +197,7 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
                 if self.is_attacking:
                     self.is_attacking = False
                 if self.is_punching:
+                    self.is_attacking = False
                     self.is_punching = False
                 if self.cast_spell:
                     self.cast_spell = False
@@ -225,8 +227,8 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 
 
     def draw(self, display):
-        self.image.fill(WHITE)
-        display.blit(self.image, (self.rect.x, self.rect.y))
+        # self.image.fill(WHITE)
+        # display.blit(self.image, (self.rect.x, self.rect.y))
         display.blit(pygame.transform.flip(self.current_frame, self.flip, False), (self.animation_rect.x, self.rect.y - 5))
 
     def handleKeypress(self):
@@ -270,14 +272,13 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 
         # handle attack 3 combo
         if keyPress[pygame.K_g] and keyPress[pygame.K_h]:
-            if self.energy_level > 50:
+            if self.energy_level > 50 and self.is_holding_sword: # only do when player is holding sword
                 self.attack(3)
                 self.energy_level -= 10
 
         if keyPress[pygame.K_j]:
             self.cast_spell_press = True
             if self.is_casting_spell:
-                # self.is_casting_spell = True
                 self.energy_level -= 2
         else:
             self.cast_spell_press = False
@@ -358,13 +359,15 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
             player_state = 'put_back'
 
         if self.is_attacking:
-            if self.attack_level == 1:
-                player_state = 'sword_attack_1'
-            elif self.attack_level == 2:
-                player_state = 'sword_attack_2'
-            else:
-                self.energy_level -= 1
-                player_state = 'sword_attack_3'
+            if not self.is_punching:
+                if self.attack_level == 1:
+                    player_state = 'sword_attack_1'
+                elif self.attack_level == 2:
+                    player_state = 'sword_attack_2'
+                else:
+                    self.energy_level -= 1
+                    player_state = 'sword_attack_3'
+            pass
 
         if self.is_punching:
             if self.is_running:
@@ -412,7 +415,7 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
         # print(self.current_state, self.is_drawing_sword)
         # print(self.is_drawing_sword, self.is_holding_sword, self.is_sheathing_sword)
         # print(self.cast_spell_press)
-        print(self.current_state)
+        print(self.is_attacking)
 
     def setState(self, state):
         if self.current_state != state:
@@ -442,6 +445,8 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
             self.is_drawing_sword = False
 
     def attack(self, attackType=1):
+        if self.is_attacking:
+            self.animation.reset_animation()
         if self.is_holding_sword:
             self.attack_level = attackType
             self.is_attacking = True
@@ -460,6 +465,9 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
     def getUp(self):
         self.is_getting_up = True
 
-    def punch(self):
-        self.punch_level = random.choice(self.punch_levels)
-        self.is_punching = True
+    def punch(self, kick=False):
+        if self.is_attacking:
+            self.animation.reset_animation()
+        if not self.is_holding_sword or self.is_drawing_sword or self.is_sheathing_sword:
+            self.punch_level = random.choice(self.punch_levels) if not kick else 3
+            self.is_punching = True
