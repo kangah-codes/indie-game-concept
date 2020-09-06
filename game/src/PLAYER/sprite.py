@@ -1,7 +1,9 @@
 """
 Main player class module
-author: Joshua Akangah
-date: 10/8/20
+author:
+Joshua Akangah
+date:
+10/8/20
 """
 
 from .settings import *
@@ -32,11 +34,20 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
         self.is_sliding = False
         self.is_holding_sword = False
         self.is_drawing_sword = False
+        self.is_sheathing_sword = False
+        self.is_attacking = False
+        self.cast_spell = False
+        self.is_casting_spell = False
 
         # additional
         self.can_double_jump = True
         self.is_double_jumping = False
         self.jump_count = 0
+        self.attack_level = 1
+        self.energy_level = 0
+        # states to freeze animations with
+        self.look_states = ['jump', 'slide', 'draw_sword', 'put_back', 'sword_attack_1', 'sword_attack_2', 'sword_attack_3', 'cast_spell', 'cast_spell_loop']
+        self.cast_spell_press = False
 
     def update(self, dt):
         self.rect.x, self.rect.y = self.pos.x, self.pos.y
@@ -60,8 +71,8 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 
         # touching ground check
         if self.touchingGround:
-            if not self.isMoving and not self.is_crouching and not self.is_sliding:
-                self.setState(self.base_state)
+            # if not self.isMoving and not self.is_crouching and not self.is_sliding and not self.is_drawing_sword or self.is_holding_sword:
+            #     self.setState(self.base_state)
 
             self.is_double_jumping = False
             self.can_double_jump = True
@@ -72,6 +83,18 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 
             self.is_double_jumping = True
 
+        if self.is_sliding:
+            self.acc.x = 0.3 if not self.flip else -0.3
+
+        if self.energy_level >= FPS*3:
+            self.energy_level = FPS*3
+        elif self.energy_level <= 0:
+            self.energy_level = 0
+
+        # increase energy only when resting
+        if self.current_state in [self.base_state, 'idle_sword']:
+            self.energy_level += 0.1
+
         self.simulateGravity(dt)
         self.simulateMotion()
         self.handleKeypress()
@@ -81,13 +104,33 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 
     def doAnimations(self, dt):
         # locking frames to last
-        if self.isJumping or self.is_sliding:
+
+        if self.current_state in self.look_states:
             if not self.animation.is_last_image():
-                self.animation.animate(dt)
+                if self.is_attacking:
+                    self.animation.animate(dt*3)
+                else:
+                    self.animation.animate(dt)
             else:
                 if self.is_sliding:
                     self.is_sliding = False
                     self.isMoving = False
+                if self.is_drawing_sword:
+                    self.is_holding_sword = True
+                    self.is_drawing_sword = False
+                if self.is_sheathing_sword:
+                    self.is_holding_sword = False
+                    self.is_sheathing_sword = False
+                if self.is_attacking:
+                    self.is_attacking = False
+                if self.cast_spell:
+                    self.cast_spell = False
+                    self.is_casting_spell = True
+                if self.is_casting_spell:
+                    if self.cast_spell_press and self.energy_level > 2:
+                        self.animation.animate(dt)
+                    else:
+                        self.is_casting_spell = False
         else:
             # flipping
             if self.is_double_jumping:
@@ -119,9 +162,11 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 
         if (keyPress[pygame.K_a] or keyPress[pygame.K_d]) or (keyPress[pygame.K_RIGHT] or keyPress[pygame.K_LEFT]):
             if self.is_crouching or self.is_walking:
-                self.acc.x = 0.1 if not self.flip else -0.1
+                if not self.is_drawing_sword or self.is_sheathing_sword or self.is_attacking:
+                    self.acc.x = 0.1 if not self.flip else -0.1
             else:
-                self.acc.x = 0.3 if not self.flip else -0.3
+                if not self.is_drawing_sword or self.is_sheathing_sword or self.is_attacking:
+                    self.acc.x = 0.3 if not self.flip else -0.3
 
         if not (keyPress[pygame.K_RIGHT] or keyPress[pygame.K_LEFT]):
             self.is_walking = False
@@ -136,6 +181,20 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
         if not (keyPress[pygame.K_s] or keyPress[pygame.K_DOWN]):
             self.is_crouching = False
 
+        # handle attack 3 combo
+        if keyPress[pygame.K_g] and keyPress[pygame.K_h]:
+            if self.energy_level > (FPS*3)/2:
+                self.attack(3)
+
+        if keyPress[pygame.K_j]:
+            self.cast_spell_press = True
+            if self.is_casting_spell:
+                self.is_casting_spell = True
+                self.energy_level -= 2
+
+        if not keyPress[pygame.K_j]:
+            self.cast_spell_press = False
+
 
     def updateStates(self):
         """
@@ -149,13 +208,29 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
         self.isFalling
         self.isMoving
         """
-        player_state = self.base_state
+
+
+        player_state = self.base_state if not self.is_holding_sword else 'idle_sword'
 
         if self.is_running:
-            player_state = 'sprint_slow'
+            if self.is_holding_sword:
+                player_state = 'sprint_sword'
+            else:
+                player_state = 'sprint_slow'
+
+            # edge case
+            if self.is_sheathing_sword:
+                player_state = 'put_back'
 
         if self.is_running_fast:
-            player_state = 'sprint_fast'
+            if self.is_holding_sword:
+                player_state = 'sprint_sword'
+            else:
+                player_state = 'sprint_fast'
+
+            # edge case
+            if self.is_sheathing_sword:
+                player_state = 'put_back'
 
         if self.isJumping:
             player_state = 'jump'
@@ -181,7 +256,35 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
         if self.is_sliding:
             player_state = 'slide'
 
+        if self.is_drawing_sword:
+            player_state = 'draw_sword'
+
+        if self.is_holding_sword and not self.isMoving:
+            player_state = 'idle_sword'
+
+        if self.is_sheathing_sword and not self.isMoving:
+            player_state = 'put_back'
+
+        if self.is_attacking:
+            if self.attack_level == 1:
+                player_state = 'sword_attack_1'
+            elif self.attack_level == 2:
+                player_state = 'sword_attack_2'
+            else:
+                self.energy_level -= 1
+                player_state = 'sword_attack_3'
+
+        if self.cast_spell:
+            player_state = 'cast_spell'
+
+        if self.is_casting_spell:
+            player_state = 'cast_spell_loop'
+
         self.setState(player_state)
+
+        # print(self.current_state, self.is_drawing_sword)
+        # print(self.is_drawing_sword, self.is_holding_sword, self.is_sheathing_sword)
+        # print(self.cast_spell_press)
 
     def setState(self, state):
         if self.current_state != state:
@@ -193,7 +296,6 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
         self.is_sliding = True
         self.is_moving = True
         self.setState('slide')
-        self.acc.x = 10 if not self.flip else -10
 
     # simulate jumping
     def simulateJump(self):
@@ -204,9 +306,18 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
             self.jump_count += 1
 
     def toggleSword(self):
-        self.is_holding_sword = not self.is_holding_sword
-
         if not self.is_holding_sword:
             self.is_drawing_sword = True
+            self.is_sheathing_sword = False
         else:
+            self.is_sheathing_sword = True
             self.is_drawing_sword = False
+
+    def attack(self, attackType=1):
+        if self.is_holding_sword:
+            self.attack_level = attackType
+            self.is_attacking = True
+
+    def castSpell(self):
+        if self.energy_level > 2:
+            self.cast_spell = True
