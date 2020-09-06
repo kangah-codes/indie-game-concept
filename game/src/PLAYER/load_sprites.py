@@ -103,10 +103,10 @@ player_states = {
 		os.path.join(BASE_DIR, 'assets/PLAYER/ATTACK/CAST_SPELL/adventurer-cast-03.png'),
 	],
 	'cast_spell_loop': [
-		os.path.join(BASE_DIR, 'assets/PLAYER/ATTACK/CAST_SPELL_LOOP/adventurer-cast-00.png'),
-		os.path.join(BASE_DIR, 'assets/PLAYER/ATTACK/CAST_SPELL_LOOP/adventurer-cast-01.png'),
-		os.path.join(BASE_DIR, 'assets/PLAYER/ATTACK/CAST_SPELL_LOOP/adventurer-cast-02.png'),
-		os.path.join(BASE_DIR, 'assets/PLAYER/ATTACK/CAST_SPELL_LOOP/adventurer-cast-03.png'),
+		os.path.join(BASE_DIR, 'assets/PLAYER/ATTACK/CAST_SPELL_LOOP/adventurer-cast-loop-00.png'),
+		os.path.join(BASE_DIR, 'assets/PLAYER/ATTACK/CAST_SPELL_LOOP/adventurer-cast-loop-01.png'),
+		os.path.join(BASE_DIR, 'assets/PLAYER/ATTACK/CAST_SPELL_LOOP/adventurer-cast-loop-02.png'),
+		os.path.join(BASE_DIR, 'assets/PLAYER/ATTACK/CAST_SPELL_LOOP/adventurer-cast-loop-03.png'),
 	],
 	'shoot_bow_standing': [
 		os.path.join(BASE_DIR, 'assets/PLAYER/BOW/SHOOT_STAND/1.png'),
