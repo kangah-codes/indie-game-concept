@@ -52,7 +52,7 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
         self.is_double_jumping = False
         self.jump_count = 0
         self.attack_level = 1
-        self.punch_levels = [1, 2]
+        self.punch_levels = [1, 2, 3]
         self.punch_level = random.choice(self.punch_levels)
         self.energy_level = 100
 
@@ -76,6 +76,7 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
             'punch_1',
             'punch_2',
             'punch_3',
+            'kick'
         ]
 
         # states to not allow movement in
@@ -93,6 +94,7 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
             'get_up',
             'punch_1',
             'punch_2',
+            'kick'
         ]
 
         self.cast_spell_press = False
@@ -173,8 +175,10 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 
         if self.current_state in self.look_states:
             if not self.animation.is_last_image():
-                if self.is_attacking or self.is_punching:
+                if self.is_attacking:
                     self.animation.animate(dt*3)
+                elif self.is_punching:
+                    self.animation.animate(dt*2)
                 else:
                     self.animation.animate(dt)
             else:
@@ -318,13 +322,13 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
             if self.is_sheathing_sword:
                 player_state = 'put_back'
 
-        if self.isJumping and not (self.shoot_bow or self.is_shooting_bow):
+        if self.isJumping and not (self.shoot_bow or self.is_shooting_bow or self.is_punching):
             player_state = 'jump'
 
         if self.is_double_jumping:
             player_state = 'jump_flip'
 
-        if self.isFalling and not (self.shoot_bow or self.is_shooting_bow):
+        if self.isFalling and not (self.shoot_bow or self.is_shooting_bow or self.is_punching):
             if self.is_double_jumping:
                 player_state = 'jump_flip'
             else:
@@ -366,8 +370,10 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
             else:
                 if self.punch_level == 1:
                     player_state = 'punch_1'
-                else:
+                elif self.punch_level == 2:
                     player_state = 'punch_2'
+                else:
+                    player_state = 'kick'
 
         if self.cast_spell:
             player_state = 'cast_spell'
