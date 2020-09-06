@@ -212,12 +212,6 @@ player_states = {
 		os.path.join(BASE_DIR, 'assets/PLAYER/GET_UP/adventurer-get-up-05.png'),
 		os.path.join(BASE_DIR, 'assets/PLAYER/GET_UP/adventurer-get-up-06.png'),
 	],
-	'drop_kick': [
-		os.path.join(BASE_DIR, 'assets/PLAYER/ATTACK/DROP_KICK/adventurer-drop-kick-00.png'),
-		os.path.join(BASE_DIR, 'assets/PLAYER/ATTACK/DROP_KICK/adventurer-drop-kick-01.png'),
-		os.path.join(BASE_DIR, 'assets/PLAYER/ATTACK/DROP_KICK/adventurer-drop-kick-02.png'),
-		os.path.join(BASE_DIR, 'assets/PLAYER/ATTACK/DROP_KICK/adventurer-drop-kick-03.png'),
-	],
 	'kick': [
 		os.path.join(BASE_DIR, 'assets/PLAYER/ATTACK/KICK/adventurer-kick-00.png'),
 		os.path.join(BASE_DIR, 'assets/PLAYER/ATTACK/KICK/adventurer-kick-01.png'),
