@@ -18,14 +18,13 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
         self.base_state = 'idle_no_sword' # base state for player
         self.current_state = self.base_state
         self.animation = Animation(player_states.get(self.current_state), 1.0)
-        self.current_frame = self.animation.get_current_image()
-        self.animation_rect = self.current_frame.get_rect()
+        self.image = self.animation.get_current_image()
+        self.rect = self.image.get_rect()
+        self.rect.x, self.rect.y = self.pos.x, self.pos.y
 
         # self.image = pygame.Surface((20, self.animation_rect.height - 5))
-        self.image = self.current_frame
         # self.image.fill(WHITE)
-        self.rect = self.image.get_rect()
-        self.mask = pygame.mask.from_surface(self.current_frame)
+        self.mask = pygame.mask.from_surface(self.image)
 
         # states
         self.flip = False
@@ -105,10 +104,21 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
         self.shoot_bow_press = False
 
     def update(self, dt):
+        self.mask = pygame.mask.from_surface(self.image)
+        #bounds = bounding_box(self.mask.outline())
+        #print(bounds)
+        #self.rect = pygame.Rect(bounds[0][0], bounds[0][1], bounds[1][0], bounds[1][1])
+        self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = self.pos.x, self.pos.y
-        self.animation_rect = self.current_frame.get_rect()
-        self.animation_rect.center = self.rect.center
-        self.image = self.current_frame
+        # self.animation_rect = self.image.get_rect()
+        # self.animation_rect.center = self.rect.center
+
+        self.image = self.animation.get_current_image()
+        # self.rect = pygame.Rect(self.pos.x, self.pos.y, 20, self.animation_rect.height-5)
+
+        # changinf image if flip
+        if self.flip:
+            self.image = pygame.transform.flip(self.image, self.flip, False)
 
         # check if player rect is leaving vertical bounds
         if self.rect.y + self.rect.height >= DISPLAY_SIZE[1] and not self.isJumping:
@@ -226,14 +236,15 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
             else:
                 self.animation.animate(dt)
 
-        self.current_frame = self.animation.get_current_image()
-        self.mask = pygame.mask.from_surface(self.current_frame)
-
-
     def draw(self, display):
         # self.image.fill(WHITE)
         # display.blit(self.image, (self.rect.x, self.rect.y))
-        display.blit(pygame.transform.flip(self.current_frame, self.flip, False), (self.animation_rect.x, self.rect.y - 5))
+        #bounds = bounding_box(self.mask.outline())
+        #pygame.draw.circle(display, BLACK, (bounds[0][0], bounds[0][1]), 10)
+        print(self.mask)
+        for point in self.mask.outline():
+            pygame.draw.circle(display, BLACK, point, 1)
+        display.blit(self.image, (self.rect.x, self.rect.y))
 
     def handleKeypress(self):
         keyPress = pygame.key.get_pressed()

@@ -40,7 +40,7 @@ class GameManager():
         [entity.update(self.dt, self.player) for entity in self.enemyEntities]
 
         # collisions
-        # self.doCollisions()
+        self.doCollisions()
 
         self.clock.tick(FPS)
 
@@ -55,8 +55,8 @@ class GameManager():
 
         [entity.draw(self.display) for entity in self.enemyEntities]
 
-        for entity in self.enemyEntities:
-            pygame.draw.line(self.display, BLACK, (entity.rect.centerx, entity.rect.centery), (self.player.rect.centerx, self.player.rect.centery))
+        # for entity in self.enemyEntities:
+        #     pygame.draw.line(self.display, BLACK, (entity.rect.centerx, entity.rect.centery), (self.player.rect.centerx, self.player.rect.centery))
 
         self.screen.blit(pygame.transform.scale(self.display, SCREEN_SIZE), (0, 0))
         pygame.display.update()
@@ -129,5 +129,5 @@ class GameManager():
 
     def doCollisions(self):
         for enemy in self.enemyEntities:
-            if pygame.sprite.collide_mask(self.player, enemy):
+            if pygame.sprite.collide_mask(enemy, self.player):
                 print("COLLIDE")

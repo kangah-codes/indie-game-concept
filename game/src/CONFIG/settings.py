@@ -13,6 +13,7 @@ import noise
 import math
 from pygame.locals import *
 from copy import deepcopy
+from functools import *
 
 os.environ['SDL_VIDEO_CENTERED'] = '1'
 pygame.init()
