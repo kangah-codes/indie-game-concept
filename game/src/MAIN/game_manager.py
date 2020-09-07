@@ -53,7 +53,7 @@ class GameManager():
         show_text(accVel[0], 0, 15, 1, 9999, self.FONT, self.display)
         show_text(accVel[1], 0, 30, 1, 9999, self.FONT, self.display)
 
-        [entity.draw(self.display) for entity in self.enemyEntities]
+        # [entity.draw(self.display) for entity in self.enemyEntities]
 
         # for entity in self.enemyEntities:
         #     pygame.draw.line(self.display, BLACK, (entity.rect.centerx, entity.rect.centery), (self.player.rect.centerx, self.player.rect.centery))
