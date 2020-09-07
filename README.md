@@ -6,7 +6,7 @@ __Dev Release 0.1.0 - 6/09/20__
 
 1. What's Implemented
     - Player States (Idle, walk, run, crouch, etc...)
-    - Melee Combat (Puch, kick)
+    - Melee Combat (Punch, kick)
     - Sword Combat
     - Spell Casting (Effects not Implemented)
     - Font rendering system (thanks to DaFluffyPotato)
