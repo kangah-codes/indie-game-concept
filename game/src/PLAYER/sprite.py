@@ -21,9 +21,11 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
         self.current_frame = self.animation.get_current_image()
         self.animation_rect = self.current_frame.get_rect()
 
-        self.image = pygame.Surface((20, self.animation_rect.height - 5))
+        # self.image = pygame.Surface((20, self.animation_rect.height - 5))
+        self.image = self.current_frame
         # self.image.fill(WHITE)
         self.rect = self.image.get_rect()
+        self.mask = pygame.mask.from_surface(self.current_frame)
 
         # states
         self.flip = False
@@ -52,9 +54,9 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
         self.is_double_jumping = False
         self.jump_count = 0
         self.attack_level = 1
-        self.punch_levels = [1, 2]
+        self.punch_levels = PUNCH_LEVELS
         self.punch_level = random.choice(self.punch_levels)
-        self.energy_level = 100
+        self.energy_level = ENERGY_LEVEL
 
         # states to freeze animations with
         self.look_states = [
@@ -106,8 +108,7 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
         self.rect.x, self.rect.y = self.pos.x, self.pos.y
         self.animation_rect = self.current_frame.get_rect()
         self.animation_rect.center = self.rect.center
-
-        self.current_frame = self.animation.get_current_image()
+        self.image = self.current_frame
 
         # check if player rect is leaving vertical bounds
         if self.rect.y + self.rect.height >= DISPLAY_SIZE[1] and not self.isJumping:
@@ -224,6 +225,9 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
                 self.animation.animate(dt*3)
             else:
                 self.animation.animate(dt)
+
+        self.current_frame = self.animation.get_current_image()
+        self.mask = pygame.mask.from_surface(self.current_frame)
 
 
     def draw(self, display):
@@ -415,7 +419,6 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
         # print(self.current_state, self.is_drawing_sword)
         # print(self.is_drawing_sword, self.is_holding_sword, self.is_sheathing_sword)
         # print(self.cast_spell_press)
-        print(self.is_attacking)
 
     def setState(self, state):
         if self.current_state != state:

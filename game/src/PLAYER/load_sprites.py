@@ -1,7 +1,7 @@
 """
-	Module for handling loading of player sprites
-	author: Joshua Akangah
-    date: 10/9/20
+Module for handling loading of player sprites
+author: Joshua Akangah
+date: 10/9/20
 """
 
 from .settings import *
