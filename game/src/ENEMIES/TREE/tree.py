@@ -12,15 +12,15 @@ class Tree(EnemyEntity):
         self.speed = 0.5
         self.can_fly = False
         self.isFalling = True
-        self.look_states = []
-        self.is_hostile = False
+        self.look_states = ['die']
+        self.is_hostile = True
 
     def update(self, dt, player):
         super(Tree, self).update(dt, player)
 
         if self.is_hostile:
             if abs(self.dx) <= 0.1:
-                self.attack()
+                self.is_attacking = True
             else:
                 self.is_attacking = False
 
@@ -31,13 +31,10 @@ class Tree(EnemyEntity):
             if not self.animation.is_last_image():
                 self.animation.animate(dt)
             else:
-                if self.is_attacking:
-                    self.is_attacking = False
+                if self.dead:
+                    pass
         else:
-            if self.dead:
-                self.animation.animate(dt/2)
-            else:
-                self.animation.animate(dt)
+            self.animation.animate(dt)
 
 
     def updateStates(self):
