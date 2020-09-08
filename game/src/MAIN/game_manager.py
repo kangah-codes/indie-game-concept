@@ -44,14 +44,14 @@ class GameManager():
 
     def draw(self):
         accVel = self.renderAccVel()
-        self.display.fill(WHITE)
-        self.player.draw(self.display)
+        self.display.fill(BLACK)
         pygame.draw.rect(self.display, BLUE, (self.player.pos.x, self.player.pos.y - 10, self.player.energy_level/5, 5))
         show_text(f'FPS {round(self.clock.get_fps())}', 0, 0, 1, 9999, self.font, self.display)
         show_text(accVel[0], 0, 15, 1, 9999, self.font, self.display)
         show_text(accVel[1], 0, 30, 1, 9999, self.font, self.display)
 
         self.enemyEntities.draw(self.display)
+        self.player.draw(self.display)
 
         self.screen.blit(pygame.transform.scale(self.display, SCREEN_SIZE), (0, 0))
         pygame.display.update()
@@ -126,7 +126,10 @@ class GameManager():
             self.update(self.dt)
 
     def doCollisions(self):
-        for enemy in self.enemyEntities:
-            if pygame.sprite.collide_mask(enemy, self.player):
-                if self.player.is_attacking:
-                    enemy.health -= 1
+        player_enemy_collision = pygame.sprite.spritecollide(self.player, self.enemyEntities, False)
+
+        for enemyEntity in player_enemy_collision:
+            if self.player.is_attacking:
+                enemyEntity.health -= self.player.damage_level
+                enemyEntity.is_taking_damage = True
+                self.player.is_attacking = False
