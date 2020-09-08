@@ -10,12 +10,13 @@ from .settings import *
 from GLOBAL.physics import *
 from .load_sprites import *
 
+
 class Player(pygame.sprite.Sprite, PhysicsObject):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         PhysicsObject.__init__(self, 100, 0)
 
-        self.base_state = 'idle_no_sword' # base state for player
+        self.base_state = 'idle_no_sword'  # base state for player
         self.current_state = self.base_state
         self.animation = Animation(player_states.get(self.current_state), 1.0)
         self.image = self.animation.get_current_image()
@@ -103,31 +104,32 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
         self.cast_spell_press = False
         self.shoot_bow_press = False
 
+        self.walk_acc = 0.1
+        self.run_acc = 0.3
+        self.dt = 0
+
     def update(self, dt):
         self.mask = pygame.mask.from_surface(self.image)
-        #bounds = bounding_box(self.mask.outline())
-        #print(bounds)
-        #self.rect = pygame.Rect(bounds[0][0], bounds[0][1], bounds[1][0], bounds[1][1])
+        self.dt = dt
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = self.pos.x, self.pos.y
-        # self.animation_rect = self.image.get_rect()
-        # self.animation_rect.center = self.rect.center
 
         self.image = self.animation.get_current_image()
-        # self.rect = pygame.Rect(self.pos.x, self.pos.y, 20, self.animation_rect.height-5)
 
         # changinf image if flip
         if self.flip:
             self.image = pygame.transform.flip(self.image, self.flip, False)
 
-        # check if player rect is leaving vertical bounds
-        if self.rect.y + self.rect.height >= DISPLAY_SIZE[1] and not self.isJumping:
+        if self.rect.bottom >= DISPLAY_SIZE[1] and not self.isJumping:
             self.touchingGround = True
-            self.pos.y = DISPLAY_SIZE[1] - self.rect.height
             self.isFalling = False
+            self.pos.y = DISPLAY_SIZE[1] - self.rect.height
 
-        if self.rect.y + self.rect.height < DISPLAY_SIZE[1]:
+        if self.rect.bottom < DISPLAY_SIZE[1]:
             self.touchingGround = False
+
+            if not self.isJumping and not self.isFalling:
+                self.pos.y = DISPLAY_SIZE[1] - self.rect.height
 
         # check if player is moving
         if self.acc.x != 0:
@@ -135,9 +137,6 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 
         # touching ground check
         if self.touchingGround:
-            # if not self.isMoving and not self.is_crouching and not self.is_sliding and not self.is_drawing_sword or self.is_holding_sword:
-            #     self.setState(self.base_state)
-
             self.is_double_jumping = False
             self.can_double_jump = True
             self.jump_count = 0
@@ -181,7 +180,6 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
         self.handleKeypress()
         self.doAnimations(dt)
         self.updateStates()
-
 
     def doAnimations(self, dt):
         # locking frames to last
@@ -229,6 +227,8 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
                     self.is_releasing_bow = False
                 if self.knock_down:
                     self.is_knocked_down = True
+                    if self.is_getting_up:
+                        self.is_getting_up = False
         else:
             # flipping
             if self.is_double_jumping:
@@ -237,14 +237,7 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
                 self.animation.animate(dt)
 
     def draw(self, display):
-        # self.image.fill(WHITE)
-        # display.blit(self.image, (self.rect.x, self.rect.y))
-        #bounds = bounding_box(self.mask.outline())
-        #pygame.draw.circle(display, BLACK, (bounds[0][0], bounds[0][1]), 10)
-        print(self.mask)
-        for point in self.mask.outline():
-            pygame.draw.circle(display, BLACK, point, 1)
-        display.blit(self.image, (self.rect.x, self.rect.y))
+        display.blit(self.image, (self.pos.x, self.pos.y))
 
     def handleKeypress(self):
         keyPress = pygame.key.get_pressed()
@@ -267,10 +260,10 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
         if (keyPress[pygame.K_a] or keyPress[pygame.K_d]) or (keyPress[pygame.K_RIGHT] or keyPress[pygame.K_LEFT]):
             if self.is_crouching or self.is_walking:
                 if not self.current_state in self.do_not_move:
-                    self.acc.x = 0.1 if not self.flip else -0.1
+                    self.acc.x = self.walk_acc*self.dt if not self.flip else -self.walk_acc*self.dt
             else:
                 if not self.current_state in self.do_not_move:
-                    self.acc.x = 0.3 if not self.flip else -0.3
+                    self.acc.x = self.run_acc*self.dt if not self.flip else -self.run_acc*self.dt
 
         if not (keyPress[pygame.K_RIGHT] or keyPress[pygame.K_LEFT]):
             self.is_walking = False
@@ -287,7 +280,7 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 
         # handle attack 3 combo
         if keyPress[pygame.K_g] and keyPress[pygame.K_h]:
-            if self.energy_level > 50 and self.is_holding_sword: # only do when player is holding sword
+            if self.energy_level > 50 and self.is_holding_sword:  # only do when player is holding sword
                 self.attack(3)
                 self.energy_level -= 10
 
@@ -303,7 +296,6 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
         else:
             self.shoot_bow_press = False
 
-
     def updateStates(self):
         """
         STATES
@@ -316,7 +308,6 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
         self.isFalling
         self.isMoving
         """
-
 
         player_state = self.base_state if not self.is_holding_sword else 'idle_sword'
 
@@ -358,7 +349,7 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
             else:
                 player_state = 'crouch'
 
-        if self.is_walking:
+        if self.is_walking and not self.isJumping and not self.isFalling:
             player_state = 'walk'
 
         if self.is_sliding:
@@ -434,7 +425,8 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
     def setState(self, state):
         if self.current_state != state:
             self.current_state = state
-            self.animation = Animation(player_states.get(self.current_state), 1.0)
+            self.animation = Animation(
+                player_states.get(self.current_state), 1.0)
 
     # state functions
     def slide(self):
@@ -483,5 +475,6 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
         if self.is_attacking:
             self.animation.reset_animation()
         if not self.is_holding_sword or self.is_drawing_sword or self.is_sheathing_sword:
-            self.punch_level = random.choice(self.punch_levels) if not kick else 3
+            self.punch_level = random.choice(
+                self.punch_levels) if not kick else 3
             self.is_punching = True
