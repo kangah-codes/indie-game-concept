@@ -11,19 +11,16 @@ class Bat(EnemyEntity):
         EnemyEntity.__init__(self, base_state, typeOf, x, y)
         self.speed = 0.5
         self.can_fly = True
+        self.look_distance = 400
 
     def update(self, dt, player):
         super(Bat, self).update(dt, player)
 
-        # self.move_to_player(player)
+        if self.dead:
+            self.can_fly = False
 
     def doAnimations(self, dt):
-        super(Bat, self).doAnimations()
+        super(Bat, self).doAnimations(dt)
 
-        self.animation.animate(dt)
-
-    def die(self):
-        if self.rect.bottom < DISPLAY_SIZE[1]:
-            self.simulateGravity()
-        else:
-            self.dead = True
+        if not self.dead:
+            self.animation.animate(dt)
