@@ -98,3 +98,8 @@ def bounding_box(points):
     x_coordinates, y_coordinates = zip(*points)
 
     return [(min(x_coordinates), min(y_coordinates)), (max(x_coordinates), max(y_coordinates))]
+
+def distance_to_point(object_a, object_b):
+    dx, dy = object_a.rect.x - object_b.rect.x, object_a.rect.y - object_b.rect.y
+
+    return(math.hypot(dx, dy), dx, dy)
