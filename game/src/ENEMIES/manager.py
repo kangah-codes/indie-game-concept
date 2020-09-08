@@ -36,6 +36,8 @@ class EnemyEntity(PhysicsObject, pygame.sprite.Sprite):
         self.is_hostile = True
         self.is_attacking = False
         self.is_idle = False if self.player_in_sight else True
+        self.is_taking_damage = False
+        # self.damage_on_collision = True # damage player when it collides
 
         # distance from player
         self.dx = None
@@ -55,10 +57,13 @@ class EnemyEntity(PhysicsObject, pygame.sprite.Sprite):
             if self.is_hostile:
                 self.lookForPlayer(player)
 
-            if self.rect.x + self.rect.width < player.rect.x:
-                self.flip = False
+            if self.rect.centerx < player.rect.centerx:
+                if self.rect.centerx + self.rect.width/2 < player.rect.x:
+                    self.flip = False
+                else:
+                    self.flip = True
 
-            if self.rect.x > player.rect.x + player.rect.width:
+            if self.rect.centerx > player.rect.centerx:
                 self.flip = True
 
         if not self.can_fly:
@@ -73,8 +78,9 @@ class EnemyEntity(PhysicsObject, pygame.sprite.Sprite):
         if self.rect.bottom < DISPLAY_SIZE[1]:
             self.touchingGround = False
 
+
         if self.health <= 0:
-            self.die()
+            self.dead = True
 
     def doAnimations(self, dt):
         self.image = self.animation.get_current_image()
@@ -94,9 +100,6 @@ class EnemyEntity(PhysicsObject, pygame.sprite.Sprite):
         if self.current_state != state:
             self.current_state = state
             self.animation = Animation(self.dict_object.get(self.current_state), self.scale)
-
-    def die(self):
-        self.dead = True
 
     def fly_to_player(self, player):
         self.dx, self.dy = player.rect.x - self.rect.x, player.rect.centery - self.rect.y
@@ -143,6 +146,3 @@ class EnemyEntity(PhysicsObject, pygame.sprite.Sprite):
 
     def die(self):
         pass
-
-    def attack(self):
-        self.is_attacking = True
