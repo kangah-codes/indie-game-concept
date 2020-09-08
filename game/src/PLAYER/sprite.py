@@ -57,6 +57,7 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
         self.punch_levels = PUNCH_LEVELS
         self.punch_level = random.choice(self.punch_levels)
         self.energy_level = ENERGY_LEVEL
+        self.damage_level = 0
 
         # states to freeze animations with
         self.look_states = [
@@ -311,6 +312,10 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
 
         player_state = self.base_state if not self.is_holding_sword else 'idle_sword'
 
+        if self.current_state == player_state: ## bug fix
+            if self.is_sliding:
+                self.is_sliding = False
+
         if self.is_running:
             if self.is_holding_sword:
                 player_state = 'sprint_sword'
@@ -367,16 +372,19 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
         if self.is_attacking:
             if not self.is_punching:
                 if self.attack_level == 1:
+                    self.damage_level = 1
                     player_state = 'sword_attack_1'
                 elif self.attack_level == 2:
+                    self.damage_level = 1.5
                     player_state = 'sword_attack_2'
                 else:
                     self.energy_level -= 1
+                    self.damage_level = 2
                     player_state = 'sword_attack_3'
-            pass
 
         if self.is_punching:
             if self.is_running:
+                self.damage_level = 0.7
                 player_state = 'punch_3'
             else:
                 if self.punch_level == 1:
@@ -385,6 +393,10 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
                     player_state = 'punch_2'
                 else:
                     player_state = 'kick'
+                self.damage_level = 0.5
+
+        if not self.is_attacking:
+            self.damage_level = 0
 
         if self.cast_spell:
             player_state = 'cast_spell'
@@ -421,6 +433,7 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
         # print(self.current_state, self.is_drawing_sword)
         # print(self.is_drawing_sword, self.is_holding_sword, self.is_sheathing_sword)
         # print(self.cast_spell_press)
+        # print(self.is_sliding, self.current_state)
 
     def setState(self, state):
         if self.current_state != state:
