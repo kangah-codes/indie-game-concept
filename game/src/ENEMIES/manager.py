@@ -61,7 +61,13 @@ class EnemyEntity(PhysicsObject, pygame.sprite.Sprite):
 
         # changing image if flip
         if self.flip:
-            self.image = pygame.transform.flip(self.image, self.flip, False)
+            if self.type == 'slime':
+                self.image = pygame.transform.flip(self.image, not self.flip, False)
+            else:
+                self.image = pygame.transform.flip(self.image, self.flip, False)
+        else:
+            if self.type == 'slime':
+                self.image = pygame.transform.flip(self.image, not self.flip, False)
 
         self.rect.x, self.rect.y = self.pos.x, self.pos.y
 
@@ -72,9 +78,6 @@ class EnemyEntity(PhysicsObject, pygame.sprite.Sprite):
             if self.rect.x + self.rect.width < player.rect.x:
                 self.flip = False
             elif self.rect.x > player.rect.x + player.rect.width:
-                self.flip = True
-
-            if self.rect.centerx > player.rect.centerx:
                 self.flip = True
 
         if not self.can_fly:
