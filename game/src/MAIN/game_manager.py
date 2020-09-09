@@ -5,12 +5,13 @@ Game manager script
 from CONFIG.settings import *
 from GLOBAL.functions import *
 from GLOBAL.font import *
+from ENEMIES.manager import EnemyGroup
 
 class GameManager():
     def __init__(self):
         self.camera = None
         self.entities = []
-        self.enemyEntities = pygame.sprite.Group()
+        self.enemyEntities = EnemyGroup()
         self.display = None
         self.cameraPos = [0, 0]
         self.trueCameraPos = [0, 0]
@@ -132,4 +133,3 @@ class GameManager():
             if self.player.is_attacking:
                 enemyEntity.health -= self.player.damage_level
                 enemyEntity.is_taking_damage = True
-                self.player.is_attacking = False
