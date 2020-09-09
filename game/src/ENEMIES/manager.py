@@ -10,6 +10,18 @@ from GLOBAL.physics import *
 from GLOBAL.animation import *
 from GLOBAL.functions import *
 
+# group for ENEMIES
+class EnemyGroup(pygame.sprite.Group):
+    def draw(self, surface):
+        sprites = self.sprites()
+        for spr in sprites:
+            self.spritedict[spr] = surface.blit(spr.image, spr.rect)
+
+            #pygame.draw.rect(surface, RED, (spr.rect.x+spr.rect.width/2-spr.health*10/spr.rect.width, spr.rect.y - 5, spr.health*10/spr.rect.width, 2))
+            if spr.health > 0:
+                pygame.draw.rect(surface, RED, (spr.rect.centerx-(spr.health)/2, spr.rect.y - 5, spr.health, 2))
+        self.lostsprites = []
+
 class EnemyEntity(PhysicsObject, pygame.sprite.Sprite):
     def __init__(self, base_state, typeOf, x, y):
         PhysicsObject.__init__(self, x, y)
@@ -57,11 +69,10 @@ class EnemyEntity(PhysicsObject, pygame.sprite.Sprite):
             if self.is_hostile:
                 self.lookForPlayer(player)
 
-            if self.rect.centerx < player.rect.centerx:
-                if self.rect.centerx + self.rect.width/2 < player.rect.x:
-                    self.flip = False
-                else:
-                    self.flip = True
+            if self.rect.x + self.rect.width < player.rect.x:
+                self.flip = False
+            elif self.rect.x > player.rect.x + player.rect.width:
+                self.flip = True
 
             if self.rect.centerx > player.rect.centerx:
                 self.flip = True
@@ -91,7 +102,7 @@ class EnemyEntity(PhysicsObject, pygame.sprite.Sprite):
 
     def draw(self, display):
         pygame.draw.rect(display, BLUE, ((self.pos.x+self.rect.width/2)-(self.health*10/2), self.pos.y - 5, self.health*10, 2))
-        display.blit(self.image, (self.pos.x, self.pos.y))
+        display.blit(self.image, (self.rect.x, self.rect.y))
 
     def updateStates(self):
         pass
@@ -113,14 +124,25 @@ class EnemyEntity(PhysicsObject, pygame.sprite.Sprite):
 
 
     def move_to_player(self, player):
+        # self.dx, self.dy = player.rect.x - self.rect.x, player.rect.centery - self.rect.y
+        # dist = math.hypot(self.dx, self.dy)
+        #
+        # if dist != 0:
+        #     self.dx /= dist  # Normalize.
+        # # Move along this normalized vector towards the player at current speed.
+        # # self.pos.x += self.dx * self.speed
+        # self.pos.x += self.dx * self.speed
+
         self.dx, self.dy = player.rect.x - self.rect.x, player.rect.centery - self.rect.y
         dist = math.hypot(self.dx, self.dy)
+        self.dx /= dist  # Normalize.
 
-        if dist != 0:
-            self.dx /= dist  # Normalize.
-        # Move along this normalized vector towards the player at current speed.
-        # self.pos.x += self.dx * self.speed
-        self.pos.x += self.dx * self.speed
+        if self.flip:
+            if self.rect.x > player.rect.x + player.rect.width:
+                self.pos.x += self.dx * self.speed
+        else:
+            if self.rect.x + self.rect.width < player.rect.x:
+                self.pos.x += self.dx * self.speed
 
 
     def lookForPlayer(self, player):
