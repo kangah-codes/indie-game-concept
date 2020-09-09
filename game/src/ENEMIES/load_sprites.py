@@ -140,5 +140,87 @@ enemy_animations = {
             os.path.join(BASE_DIR, 'assets/ENEMIES/GOBLIN/DIE/2.png'),
             os.path.join(BASE_DIR, 'assets/ENEMIES/GOBLIN/DIE/3.png'),
         ]
+    },
+    'mushroom': {
+        'scale': 1.0,
+        'health': 20,
+        'damage': 5,
+        'idle': [
+            os.path.join(BASE_DIR, 'assets/ENEMIES/MUSHROOM/IDLE/0.png'),
+            os.path.join(BASE_DIR, 'assets/ENEMIES/MUSHROOM/IDLE/1.png'),
+            os.path.join(BASE_DIR, 'assets/ENEMIES/MUSHROOM/IDLE/2.png'),
+            os.path.join(BASE_DIR, 'assets/ENEMIES/MUSHROOM/IDLE/3.png'),
+        ],
+        'move': [
+            os.path.join(BASE_DIR, 'assets/ENEMIES/MUSHROOM/RUN/0.png'),
+            os.path.join(BASE_DIR, 'assets/ENEMIES/MUSHROOM/RUN/1.png'),
+            os.path.join(BASE_DIR, 'assets/ENEMIES/MUSHROOM/RUN/2.png'),
+            os.path.join(BASE_DIR, 'assets/ENEMIES/MUSHROOM/RUN/3.png'),
+            os.path.join(BASE_DIR, 'assets/ENEMIES/MUSHROOM/RUN/4.png'),
+            os.path.join(BASE_DIR, 'assets/ENEMIES/MUSHROOM/RUN/5.png'),
+            os.path.join(BASE_DIR, 'assets/ENEMIES/MUSHROOM/RUN/6.png'),
+            os.path.join(BASE_DIR, 'assets/ENEMIES/MUSHROOM/RUN/7.png'),
+        ],
+        'damage': [
+            os.path.join(BASE_DIR, 'assets/ENEMIES/MUSHROOM/DAMAGE/0.png'),
+            os.path.join(BASE_DIR, 'assets/ENEMIES/MUSHROOM/DAMAGE/1.png'),
+            os.path.join(BASE_DIR, 'assets/ENEMIES/MUSHROOM/DAMAGE/2.png'),
+            os.path.join(BASE_DIR, 'assets/ENEMIES/MUSHROOM/DAMAGE/3.png'),
+        ],
+        'attack': [
+            os.path.join(BASE_DIR, 'assets/ENEMIES/MUSHROOM/ATTACK/0.png'),
+            os.path.join(BASE_DIR, 'assets/ENEMIES/MUSHROOM/ATTACK/1.png'),
+            os.path.join(BASE_DIR, 'assets/ENEMIES/MUSHROOM/ATTACK/2.png'),
+            os.path.join(BASE_DIR, 'assets/ENEMIES/MUSHROOM/ATTACK/3.png'),
+            os.path.join(BASE_DIR, 'assets/ENEMIES/MUSHROOM/ATTACK/4.png'),
+            os.path.join(BASE_DIR, 'assets/ENEMIES/MUSHROOM/ATTACK/5.png'),
+            os.path.join(BASE_DIR, 'assets/ENEMIES/MUSHROOM/ATTACK/6.png'),
+            os.path.join(BASE_DIR, 'assets/ENEMIES/MUSHROOM/ATTACK/7.png'),
+        ],
+        'die': [
+            os.path.join(BASE_DIR, 'assets/ENEMIES/MUSHROOM/DIE/0.png'),
+            os.path.join(BASE_DIR, 'assets/ENEMIES/MUSHROOM/DIE/1.png'),
+            os.path.join(BASE_DIR, 'assets/ENEMIES/MUSHROOM/DIE/2.png'),
+            os.path.join(BASE_DIR, 'assets/ENEMIES/MUSHROOM/DIE/3.png'),
+            os.path.join(BASE_DIR, 'assets/ENEMIES/MUSHROOM/DIE/4.png'),
+            os.path.join(BASE_DIR, 'assets/ENEMIES/MUSHROOM/DIE/5.png'),
+            os.path.join(BASE_DIR, 'assets/ENEMIES/MUSHROOM/DIE/6.png'),
+            os.path.join(BASE_DIR, 'assets/ENEMIES/MUSHROOM/DIE/7.png'),
+        ]
+    },
+    'skeleton': {
+        'scale': 0.85,
+        'health': 20,
+        'damage': 5,
+        'idle': [
+            os.path.join(BASE_DIR, 'assets/ENEMIES/SKELETON/IDLE/0.png'),
+            os.path.join(BASE_DIR, 'assets/ENEMIES/SKELETON/IDLE/1.png'),
+            os.path.join(BASE_DIR, 'assets/ENEMIES/SKELETON/IDLE/2.png'),
+            os.path.join(BASE_DIR, 'assets/ENEMIES/SKELETON/IDLE/3.png'),
+        ],
+        'move': [
+            os.path.join(BASE_DIR, 'assets/ENEMIES/SKELETON/RUN/0.png'),
+            os.path.join(BASE_DIR, 'assets/ENEMIES/SKELETON/RUN/1.png'),
+            os.path.join(BASE_DIR, 'assets/ENEMIES/SKELETON/RUN/2.png'),
+            os.path.join(BASE_DIR, 'assets/ENEMIES/SKELETON/RUN/3.png'),
+        ],
+        'damage': [
+            os.path.join(BASE_DIR, 'assets/ENEMIES/SKELETON/DAMAGE/0.png'),
+            os.path.join(BASE_DIR, 'assets/ENEMIES/SKELETON/DAMAGE/1.png'),
+            os.path.join(BASE_DIR, 'assets/ENEMIES/SKELETON/DAMAGE/2.png'),
+            os.path.join(BASE_DIR, 'assets/ENEMIES/SKELETON/DAMAGE/3.png'),
+        ],
+        'attack': [
+            os.path.join(BASE_DIR, 'assets/ENEMIES/SKELETON/ATTACK/0.png'),
+            os.path.join(BASE_DIR, 'assets/ENEMIES/SKELETON/ATTACK/3.png'),
+            os.path.join(BASE_DIR, 'assets/ENEMIES/SKELETON/ATTACK/4.png'),
+            os.path.join(BASE_DIR, 'assets/ENEMIES/SKELETON/ATTACK/9.png'),
+        ],
+        'die': [
+            os.path.join(BASE_DIR, 'assets/ENEMIES/SKELETON/DIE/0.png'),
+            os.path.join(BASE_DIR, 'assets/ENEMIES/SKELETON/DIE/1.png'),
+            os.path.join(BASE_DIR, 'assets/ENEMIES/SKELETON/DIE/2.png'),
+            os.path.join(BASE_DIR, 'assets/ENEMIES/SKELETON/DIE/3.png'),
+        ]
     }
 }
