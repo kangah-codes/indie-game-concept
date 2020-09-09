@@ -190,7 +190,7 @@ enemy_animations = {
     },
     'skeleton': {
         'scale': 0.85,
-        'health': 20,
+        'health': 50,
         'damage': 5,
         'idle': [
             os.path.join(BASE_DIR, 'assets/ENEMIES/SKELETON/IDLE/0.png'),
@@ -221,6 +221,42 @@ enemy_animations = {
             os.path.join(BASE_DIR, 'assets/ENEMIES/SKELETON/DIE/1.png'),
             os.path.join(BASE_DIR, 'assets/ENEMIES/SKELETON/DIE/2.png'),
             os.path.join(BASE_DIR, 'assets/ENEMIES/SKELETON/DIE/3.png'),
+        ]
+    },
+    'slime': {
+        'scale': 0.85,
+        'health': 50,
+        'damage': 5,
+        'idle': [
+            os.path.join(BASE_DIR, 'assets/ENEMIES/SLIME/IDLE/0.png'),
+            os.path.join(BASE_DIR, 'assets/ENEMIES/SLIME/IDLE/1.png'),
+            os.path.join(BASE_DIR, 'assets/ENEMIES/SLIME/IDLE/2.png'),
+            os.path.join(BASE_DIR, 'assets/ENEMIES/SLIME/IDLE/3.png'),
+        ],
+        'move': [
+            os.path.join(BASE_DIR, 'assets/ENEMIES/SLIME/MOVE/0.png'),
+            os.path.join(BASE_DIR, 'assets/ENEMIES/SLIME/MOVE/1.png'),
+            os.path.join(BASE_DIR, 'assets/ENEMIES/SLIME/MOVE/2.png'),
+            os.path.join(BASE_DIR, 'assets/ENEMIES/SLIME/MOVE/3.png'),
+        ],
+        'damage': [
+            os.path.join(BASE_DIR, 'assets/ENEMIES/SLIME/HURT/0.png'),
+            os.path.join(BASE_DIR, 'assets/ENEMIES/SLIME/HURT/1.png'),
+            os.path.join(BASE_DIR, 'assets/ENEMIES/SLIME/HURT/2.png'),
+            os.path.join(BASE_DIR, 'assets/ENEMIES/SLIME/HURT/3.png'),
+        ],
+        'attack': [
+            os.path.join(BASE_DIR, 'assets/ENEMIES/SLIME/ATTACK/0.png'),
+            os.path.join(BASE_DIR, 'assets/ENEMIES/SLIME/ATTACK/1.png'),
+            os.path.join(BASE_DIR, 'assets/ENEMIES/SLIME/ATTACK/2.png'),
+            os.path.join(BASE_DIR, 'assets/ENEMIES/SLIME/ATTACK/3.png'),
+            os.path.join(BASE_DIR, 'assets/ENEMIES/SLIME/ATTACK/4.png'),
+        ],
+        'die': [
+            os.path.join(BASE_DIR, 'assets/ENEMIES/SLIME/DIE/0.png'),
+            os.path.join(BASE_DIR, 'assets/ENEMIES/SLIME/DIE/1.png'),
+            os.path.join(BASE_DIR, 'assets/ENEMIES/SLIME/DIE/2.png'),
+            os.path.join(BASE_DIR, 'assets/ENEMIES/SLIME/DIE/3.png'),
         ]
     }
 }
