@@ -189,7 +189,7 @@ enemy_animations = {
         ]
     },
     'skeleton': {
-        'scale': 0.85,
+        'scale': 0.9,
         'health': 50,
         'damage': 5,
         'idle': [
@@ -203,18 +203,23 @@ enemy_animations = {
             os.path.join(BASE_DIR, 'assets/ENEMIES/SKELETON/RUN/1.png'),
             os.path.join(BASE_DIR, 'assets/ENEMIES/SKELETON/RUN/2.png'),
             os.path.join(BASE_DIR, 'assets/ENEMIES/SKELETON/RUN/3.png'),
+            os.path.join(BASE_DIR, 'assets/ENEMIES/SKELETON/RUN/4.png'),
+            os.path.join(BASE_DIR, 'assets/ENEMIES/SKELETON/RUN/5.png'),
         ],
         'damage': [
             os.path.join(BASE_DIR, 'assets/ENEMIES/SKELETON/DAMAGE/0.png'),
             os.path.join(BASE_DIR, 'assets/ENEMIES/SKELETON/DAMAGE/1.png'),
             os.path.join(BASE_DIR, 'assets/ENEMIES/SKELETON/DAMAGE/2.png'),
-            os.path.join(BASE_DIR, 'assets/ENEMIES/SKELETON/DAMAGE/3.png'),
         ],
         'attack': [
             os.path.join(BASE_DIR, 'assets/ENEMIES/SKELETON/ATTACK/0.png'),
             os.path.join(BASE_DIR, 'assets/ENEMIES/SKELETON/ATTACK/3.png'),
             os.path.join(BASE_DIR, 'assets/ENEMIES/SKELETON/ATTACK/4.png'),
             os.path.join(BASE_DIR, 'assets/ENEMIES/SKELETON/ATTACK/9.png'),
+            os.path.join(BASE_DIR, 'assets/ENEMIES/SKELETON/ATTACK/10.png'),
+            os.path.join(BASE_DIR, 'assets/ENEMIES/SKELETON/ATTACK/11.png'),
+            os.path.join(BASE_DIR, 'assets/ENEMIES/SKELETON/ATTACK/12.png'),
+            os.path.join(BASE_DIR, 'assets/ENEMIES/SKELETON/ATTACK/13.png'),
         ],
         'die': [
             os.path.join(BASE_DIR, 'assets/ENEMIES/SKELETON/DIE/0.png'),
