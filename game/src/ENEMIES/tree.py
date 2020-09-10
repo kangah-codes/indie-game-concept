@@ -14,6 +14,7 @@ class Tree(EnemyEntity):
         self.isFalling = True
         self.look_states = ['die']
         self.is_hostile = True
+        self.damage_level = 0.7
 
     def update(self, dt, player):
         super(Tree, self).update(dt, player)

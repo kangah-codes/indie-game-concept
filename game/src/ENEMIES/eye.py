@@ -15,6 +15,7 @@ class Eye(EnemyEntity):
         self.is_hostile = True
         self.can_fly = True
         self.look_distance = 100
+        self.damage_level = 1
 
     def update(self, dt, player):
         super(Eye, self).update(dt, player)

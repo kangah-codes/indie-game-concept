@@ -12,6 +12,7 @@ class Bat(EnemyEntity):
         self.speed = 0.5
         self.can_fly = True
         self.look_distance = 400
+        self.damage_level = 0.1
 
     def update(self, dt, player):
         super(Bat, self).update(dt, player)

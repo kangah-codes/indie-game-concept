@@ -16,6 +16,7 @@ class Goblin(EnemyEntity):
         self.is_hostile = True
         self.look_distance = 200
         self.attack_distance = 0.3
+        self.damage_level = 1
 
     def update(self, dt, player):
         super(Goblin, self).update(dt, player)
@@ -37,9 +38,6 @@ class Goblin(EnemyEntity):
                 self.isFalling = True
             else:
                 self.isFalling = False
-
-        print(self.is_taking_damage)
-
 
     def doAnimations(self, dt):
         super(Goblin, self).doAnimations(dt)

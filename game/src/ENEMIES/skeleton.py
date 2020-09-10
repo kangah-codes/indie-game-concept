@@ -16,6 +16,7 @@ class Skeleton(EnemyEntity):
         self.is_hostile = True
         self.look_distance = 200
         self.attack_distance = 50
+        self.damage_level = 1.8
 
     def update(self, dt, player):
         super(Skeleton, self).update(dt, player)

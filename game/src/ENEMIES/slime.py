@@ -16,6 +16,7 @@ class Slime(EnemyEntity):
         self.is_hostile = True
         self.look_distance = 200
         self.attack_distance = 50
+        self.damage_level = 0.8
 
     def update(self, dt, player):
         super(Slime, self).update(dt, player)
@@ -38,7 +39,7 @@ class Slime(EnemyEntity):
             else:
                 self.isFalling = False
 
-        print(self.flip)
+        # print(self.flip)
 
     def doAnimations(self, dt):
         super(Slime, self).doAnimations(dt)
