@@ -58,6 +58,7 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
         self.punch_level = random.choice(self.punch_levels)
         self.energy_level = ENERGY_LEVEL
         self.damage_level = 0
+        self.health = 100
 
         # states to freeze animations with
         self.look_states = [

@@ -10,10 +10,11 @@ from ENEMIES.slime import *
 
 testGame = GameManager()
 
-player = Player()
-testGame.enemyEntities.add(Slime('idle', 'slime', 100, 50))
-# testGame.enemyEntities.add(Eye('idle', 'eye', 100, 50))
-# testGame.enemyEntities.add(Bat('idle', 'bat', 100, 50))
-# testGame.enemyEntities.add(Tree('idle', 'tree', 100, 50))
-testGame.player = player
+testGame.enemyEntities.add(Slime('idle', 'slime', 10, 50))
+testGame.enemyEntities.add(Eye('idle', 'eye', 30, 50))
+# testGame.enemyEntities.add(Bat('idle', 'bat', 50, 50))
+# testGame.enemyEntities.add(Tree('idle', 'tree', 70, 50))
+# testGame.enemyEntities.add(Goblin('idle', 'goblin', 90, 50))
+testGame.enemyEntities.add(Skeleton('idle', 'skeleton', 110, 50))
+testGame.player = Player()
 testGame.mainLoop()

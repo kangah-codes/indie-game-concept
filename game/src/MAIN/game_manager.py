@@ -133,3 +133,7 @@ class GameManager():
             if self.player.is_attacking:
                 enemyEntity.health -= self.player.damage_level
                 enemyEntity.is_taking_damage = True
+            else:
+                self.player.health -= enemyEntity.damage_level
+                # if not self.player.is_knocked_down:
+                #     self.player.knockDown()
