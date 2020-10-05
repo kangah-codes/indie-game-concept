@@ -45,7 +45,7 @@ class GameManager():
 
     def draw(self):
         accVel = self.renderAccVel()
-        self.display.fill(BLACK)
+        self.display.fill(WHITE)
         pygame.draw.rect(self.display, BLUE, (self.player.pos.x, self.player.pos.y - 10, self.player.energy_level/5, 5))
         show_text(f'FPS {round(self.clock.get_fps())}', 0, 0, 1, 9999, self.font, self.display)
         show_text(accVel[0], 0, 15, 1, 9999, self.font, self.display)
