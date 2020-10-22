@@ -28,6 +28,9 @@ class GameManager():
 
         self.isRunning = True
 
+        # portal group
+        self.portals = []
+
     def update(self, dt):
         self.dt = time.time() - self.time_epoch
 
@@ -37,6 +40,8 @@ class GameManager():
 
         self.player.update(self.dt)
         self.enemyEntities.update(self.dt, self.player)
+        for portal in self.portals:
+            portal.update(self.dt)
 
         # collisions
         self.doCollisions()
@@ -45,14 +50,16 @@ class GameManager():
 
     def draw(self):
         accVel = self.renderAccVel()
-        self.display.fill(WHITE)
+        self.display.fill(BLACK)
         pygame.draw.rect(self.display, BLUE, (self.player.pos.x, self.player.pos.y - 10, self.player.energy_level/5, 5))
         show_text(f'FPS {round(self.clock.get_fps())}', 0, 0, 1, 9999, self.font, self.display)
         show_text(accVel[0], 0, 15, 1, 9999, self.font, self.display)
         show_text(accVel[1], 0, 30, 1, 9999, self.font, self.display)
 
-        self.enemyEntities.draw(self.display)
         self.player.draw(self.display)
+        for portal in self.portals:
+            portal.draw(self.display)
+        self.enemyEntities.draw(self.display)
 
         self.screen.blit(pygame.transform.scale(self.display, SCREEN_SIZE), (0, 0))
         pygame.display.update()

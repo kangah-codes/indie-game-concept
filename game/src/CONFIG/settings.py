@@ -36,6 +36,7 @@ CLOCK = pygame.time.Clock()
 SCREEN_SIZE = (616, 400)
 DISPLAY_SIZE = (SCREEN_SIZE[0]//2, SCREEN_SIZE[1]//2)
 
+# global chunk size
 CHUNK_SIZE = 8
 
 FONT_DAT = {'A':[3],'B':[3],'C':[3],'D':[3],'E':[3],'F':[3],'G':[3],'H':[3],'I':[3],'J':[3],'K':[3],'L':[3],'M':[5],'N':[3],'O':[3],'P':[3],'Q':[3],'R':[3],'S':[3],'T':[3],'U':[3],'V':[3],'W':[5],'X':[3],'Y':[3],'Z':[3],
