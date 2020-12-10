@@ -41,7 +41,7 @@ class GameManager():
         self.player.update(self.dt)
         self.enemyEntities.update(self.dt, self.player)
         for portal in self.portals:
-            portal.update(self.dt)
+            portal.update(self.dt, self.player)
 
         # collisions
         self.doCollisions()
