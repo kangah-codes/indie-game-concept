@@ -33,8 +33,9 @@ FPS = 60
 CLOCK = pygame.time.Clock()
 
 # screen sizes
-SCREEN_SIZE = (616, 400)
+SCREEN_SIZE = (700, 500)
 DISPLAY_SIZE = (SCREEN_SIZE[0]//2, SCREEN_SIZE[1]//2)
+SCREEN = pygame.display.set_mode(SCREEN_SIZE, pygame.RESIZABLE)
 
 # global chunk size
 CHUNK_SIZE = 8
