@@ -6,40 +6,33 @@ date - 22/10/20
 
 from .settings import *
 
+spritesheet = Spritesheet(os.path.join(BASE_DIR, 'assets/EFFECTS/PORTAL/sheet.png'))
+
 # portal animations
 portal_animations = {
-    'idle': [
-        os.path.join(BASE_DIR, 'assets/EFFECTS/PORTAL/20.png'),
-    ],
-    'open': [
-        os.path.join(BASE_DIR, 'assets/EFFECTS/PORTAL/0.png'),
-        os.path.join(BASE_DIR, 'assets/EFFECTS/PORTAL/3.png'),
-        os.path.join(BASE_DIR, 'assets/EFFECTS/PORTAL/4.png'),
-        os.path.join(BASE_DIR, 'assets/EFFECTS/PORTAL/5.png'),
-        os.path.join(BASE_DIR, 'assets/EFFECTS/PORTAL/6.png'),
-        # os.path.join(BASE_DIR, 'assets/EFFECTS/PORTAL/7.png'),
-        os.path.join(BASE_DIR, 'assets/EFFECTS/PORTAL/8.png'),
-        os.path.join(BASE_DIR, 'assets/EFFECTS/PORTAL/9.png'),
-    ],
-    # reverse this list to get open
-    'open_close_animation': [
-        os.path.join(BASE_DIR, 'assets/EFFECTS/PORTAL/19.png'),
-        os.path.join(BASE_DIR, 'assets/EFFECTS/PORTAL/13.png'),
-        os.path.join(BASE_DIR, 'assets/EFFECTS/PORTAL/15.png'),
-        os.path.join(BASE_DIR, 'assets/EFFECTS/PORTAL/16.png'),
-        os.path.join(BASE_DIR, 'assets/EFFECTS/PORTAL/18.png'),
-        os.path.join(BASE_DIR, 'assets/EFFECTS/PORTAL/17.png'),
-    ]
+    'open_green': spritesheet.images_at((
+        (25,15,13,42),
+        (89,16,13,41),
+        (281,15,13,42),
+        (89,16,13,41),
+        (217,16,13,41),
+        (345,16,13,41),
+        (472,16,14,41),
+    ), colorkey=(255,255,255))
 }
 
+print(portal_animations['open'])
 class Portal(pygame.sprite.Sprite):
-    def __init__(self, x, y):
+    def __init__(self, x, y, typeOf):
         pygame.sprite.Sprite.__init__(self)
         self.pos = pygame.math.Vector2(x, y)
         self.to = None
-        self.base_state = 'idle'
-        self.current_state = self.base_state
-        self.animation = Animation(portal_animations.get(self.base_state), 0.25, 0.125)
+        self.type = typeOf
+        if self.type == 0:
+            self.base_state = 'open_green'
+            self.sprites = portal_animations.get(self.base_state)
+            self.current_state = self.base_state
+        self.animation = Animation(self.sprites, 0.9, 0.125, use_surface=True)
         self.image = self.animation.get_current_image()
         self.rect = self.image.get_rect()
         self.mask = pygame.mask.from_surface(self.image)
@@ -50,24 +43,14 @@ class Portal(pygame.sprite.Sprite):
         else:
             self.pos.y = DISPLAY_SIZE[1] - self.rect.height
 
-        self.rect.x, self.rect.y = self.pos.x, self.pos.y
         self.rect = self.image.get_rect()
-        print(self.rect.x, self.pos.x)
         self.rect.x, self.rect.y = self.pos.x, self.pos.y
         self.image = self.animation.get_current_image()
+        self.mask = pygame.mask.from_surface(self.image)
         self.animation.animate(dt)
 
-        if self.current_state == 'open_close_animation':
-            if self.animation.is_last_image():
-                self.setState('open')
-
         if pygame.sprite.collide_mask(player, self):
-            if self.current_state == 'idle':
-                self.setState('open_close_animation', True)
-            # if not self.animation.is_last_image():
-            #     print('lol')
-            # else:
-            #     self.setState('open')
+
             if player.rect.centerx < self.rect.centerx: # player is to the left
                 if player.rect.right >= self.rect.left:
                     player.pos.x = self.to.rect.right
@@ -80,11 +63,11 @@ class Portal(pygame.sprite.Sprite):
             self.current_state = state
             if reverse:
                 self.animation = Animation(
-                    portal_animations.get(self.current_state)[::-1], 1.0, 0.125
+                    portal_animations.get(self.current_state)[::-1], 1.0, 0.125, True
                 )
                 return
             self.animation = Animation(
-                portal_animations.get(self.current_state), 1.0, 0.125
+                portal_animations.get(self.current_state), 1.0, 0.125, True
             )
 
     def draw(self, display):
