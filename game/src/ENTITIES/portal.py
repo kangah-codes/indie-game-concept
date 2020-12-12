@@ -6,11 +6,12 @@ date - 22/10/20
 
 from .settings import *
 
-spritesheet = Spritesheet(os.path.join(BASE_DIR, 'assets/EFFECTS/PORTAL/sheet.png'))
+green_spritesheet = Spritesheet(os.path.join(BASE_DIR, 'assets/EFFECTS/PORTAL/green.png'))
+purple_spritesheet = Spritesheet(os.path.join(BASE_DIR, 'assets/EFFECTS/PORTAL/purple.png'))
 
 # portal animations
 portal_animations = {
-    'open_green': spritesheet.images_at((
+    'open_green': green_spritesheet.images_at((
         (25,15,13,42),
         (89,16,13,41),
         (281,15,13,42),
@@ -18,10 +19,18 @@ portal_animations = {
         (217,16,13,41),
         (345,16,13,41),
         (472,16,14,41),
-    ), colorkey=(255,255,255))
+    ), colorkey=(255,255,255)),
+    'open_purple': purple_spritesheet.images_at((
+        (25,15,13,42),
+        (89,16,13,41),
+        (281,15,13,42),
+        (89,16,13,41),
+        (217,16,13,41),
+        (345,16,13,41),
+        (472,16,14,41),
+    ), colorkey=(255,255,255)),
 }
 
-print(portal_animations['open'])
 class Portal(pygame.sprite.Sprite):
     def __init__(self, x, y, typeOf):
         pygame.sprite.Sprite.__init__(self)
@@ -30,6 +39,10 @@ class Portal(pygame.sprite.Sprite):
         self.type = typeOf
         if self.type == 0:
             self.base_state = 'open_green'
+            self.sprites = portal_animations.get(self.base_state)
+            self.current_state = self.base_state
+        else:
+            self.base_state = 'open_purple'
             self.sprites = portal_animations.get(self.base_state)
             self.current_state = self.base_state
         self.animation = Animation(self.sprites, 0.9, 0.125, use_surface=True)
