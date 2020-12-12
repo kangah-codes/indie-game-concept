@@ -9,7 +9,7 @@ class Animation:
     """
     Class animation
     """
-    def __init__(self, sprites, scale, frame_duration=0.1):
+    def __init__(self, sprites, scale, frame_duration=0.1, use_surface=False):
         """
         __init__ method of animation class
         :param sprites: A list of all images to be included in the animation
@@ -19,11 +19,14 @@ class Animation:
         eg. A scale of 0.5 scales the image to half its size
         The full path of the sprites have to be included in the string
         """
-        self.images = []
-        for i in sprites:
-            image = pygame.image.load(i).convert_alpha()
-            images = pygame.transform.scale(image, (int(image.get_rect().width * scale), int(image.get_rect().height * scale)))
-            self.images.append(images)
+        if (not use_surface):
+            self.images = []
+            for i in sprites:
+                image = pygame.image.load(i).convert_alpha()
+                images = pygame.transform.scale(image, (int(image.get_rect().width * scale), int(image.get_rect().height * scale)))
+                self.images.append(images)
+        else:
+            self.images = sprites
         self.animation_time = frame_duration
         self.current_time = 0
         self.animation_frames = len(self.images)
