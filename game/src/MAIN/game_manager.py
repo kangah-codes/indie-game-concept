@@ -18,7 +18,7 @@ class GameManager():
         self.font = None
         self.player = None
 
-        self.screen = pygame.display.set_mode(SCREEN_SIZE, pygame.RESIZABLE)
+        self.screen = SCREEN # moved display mode to settings
         self.display = pygame.Surface(DISPLAY_SIZE)
         self.font = generate_font(os.path.join(BASE_DIR, 'assets/UI/FONT/small_font.png'), FONT_DAT, 5, 8, GREEN)
 
