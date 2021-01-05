@@ -7,6 +7,7 @@ from GLOBAL.functions import *
 from GLOBAL.font import *
 from ENEMIES.manager import EnemyGroup
 
+
 class GameManager():
     def __init__(self):
         self.camera = None
@@ -63,9 +64,6 @@ class GameManager():
 
         self.screen.blit(pygame.transform.scale(self.display, SCREEN_SIZE), (0, 0))
         pygame.display.update()
-
-    def renderFps(self, fps):
-        return self.font.render(f"FPS: {round(fps)}", 0, GREEN)
 
     def renderAccVel(self):
         return [
