@@ -127,18 +127,12 @@ class EnemyEntity(PhysicsObject, pygame.sprite.Sprite):
 
 
     def move_to_player(self, player):
-        # self.dx, self.dy = player.rect.x - self.rect.x, player.rect.centery - self.rect.y
-        # dist = math.hypot(self.dx, self.dy)
-        #
-        # if dist != 0:
-        #     self.dx /= dist  # Normalize.
-        # # Move along this normalized vector towards the player at current speed.
-        # # self.pos.x += self.dx * self.speed
-        # self.pos.x += self.dx * self.speed
 
         self.dx, self.dy = player.rect.x - self.rect.x, player.rect.centery - self.rect.y
         dist = math.hypot(self.dx, self.dy)
-        self.dx /= dist  # Normalize.
+
+        if dist != 0:
+            self.dx /= dist  # Normalize.
 
         if self.flip:
             if self.rect.x > player.rect.x + player.rect.width:
