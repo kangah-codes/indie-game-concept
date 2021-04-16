@@ -6,6 +6,7 @@ date: 7/9/20
 
 from .manager import *
 
+
 class Bat(EnemyEntity):
     def __init__(self, base_state, typeOf, x, y):
         EnemyEntity.__init__(self, base_state, typeOf, x, y)

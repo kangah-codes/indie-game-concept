@@ -9,7 +9,7 @@ import os
 import time
 import random
 import sys
-import noise
+# import noise
 import math
 from pygame.locals import *
 from copy import deepcopy
