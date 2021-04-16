@@ -286,7 +286,7 @@ class Player(pygame.sprite.Sprite, PhysicsObject):
                 self.attack(3)
                 self.energy_level -= 10
 
-        if keyPress[pygame.K_j]:
+        if keyPress[pygame.K_j] and self.energy_level > ENERGY_LEVEL / 2:
             self.cast_spell_press = True
             if self.is_casting_spell:
                 self.energy_level -= 2

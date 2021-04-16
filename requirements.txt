@@ -1,5 +1,5 @@
 llvmlite==0.33.0
-noise @ file:///C:/Users/Leslie%20Sotikon/Desktop/indie-game-concept/noise-1.2.3-cp37-cp37m-win_amd64.whl
+# noise @ file:///C:\Users\pyg0d\Desktop\indie-game-concept\noise-1.2.3-cp37-cp37m-win_amd64.whl
 numba==0.50.1
 numpy==1.19.1
 pygame==2.0.0.dev6
